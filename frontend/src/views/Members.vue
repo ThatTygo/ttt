@@ -10,13 +10,6 @@ const editing = ref(null) // null = dicht, {} = nieuw, {id..} = bewerken
 const error = ref('')
 
 const isAdmin = computed(() => auth.can('admin'))
-const active = computed(() => members.value.filter((m) => m.active))
-const todayIndex = (['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']).indexOf(
-  new Intl.DateTimeFormat('en-GB', { weekday: 'short', timeZone: 'Europe/Amsterdam' }).format(new Date()),
-)
-const roster = computed(() =>
-  DAYS.map((day, i) => ({ day, i, names: active.value.filter((m) => m.shift_day === i).map((m) => m.name) })),
-)
 const userName = (id) => users.value.find((u) => u.id === id)?.name
 
 async function load() {
@@ -66,23 +59,12 @@ async function remove(m) {
   <div class="wrap page">
     <div class="row spread top">
       <div>
-        <span class="eyebrow">Alleen zichtbaar voor admins</span>
+        <span class="eyebrow">Alleen zichtbaar voor admins · <RouterLink to="/rooster">bekijk het rooster</RouterLink></span>
         <h1>Ledenadministratie</h1>
-        <p class="lead">Wie er bij de TTT hoort, wie welke dagdienst draait en wie welke functie bekleedt.</p>
+        <p class="lead">Wie er bij de TTT hoort, welke functie ze hebben en welke dagdienst ze draaien.</p>
       </div>
       <button v-if="isAdmin" class="btn signal" @click="open(null)">+ Lid toevoegen</button>
     </div>
-
-    <section class="roster">
-      <h2>Dienstrooster</h2>
-      <ol>
-        <li v-for="r in roster" :key="r.day" :class="{ today: r.i === todayIndex }">
-          <span class="day">{{ r.day }}</span>
-          <span class="who">{{ r.names.join(' & ') || '—' }}</span>
-          <span v-if="r.i === todayIndex" class="badge signal">Vandaag</span>
-        </li>
-      </ol>
-    </section>
 
     <form v-if="editing" class="card editor" @submit.prevent="save">
       <h3>{{ editing.id ? `${editing.name} bewerken` : 'Nieuw lid' }}</h3>
@@ -154,15 +136,6 @@ async function remove(m) {
 
 <style scoped>
 .top { align-items: end; margin-bottom: 28px; }
-.roster { margin-bottom: 28px; }
-.roster ol { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
-.roster li { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: grid; gap: 4px; align-content: start; }
-.roster li.today { border-color: var(--signal); box-shadow: 0 0 0 2px var(--signal); }
-.day { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); font-weight: 700; }
-.who { font-family: var(--display); font-size: 1.5rem; letter-spacing: 0.03em; line-height: 1.1; }
-.roster .badge { justify-self: start; }
-@media (max-width: 900px) { .roster ol { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); } }
-
 .editor { margin-bottom: 24px; }
 .check { margin-bottom: 18px; font-weight: 600; }
 .push { margin-left: auto; }

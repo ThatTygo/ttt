@@ -9,6 +9,7 @@ const routes = [
   { path: '/columns/nieuw', component: () => import('./views/ColumnEditor.vue'), meta: { role: 'editor', title: 'Nieuwe column' } },
   { path: '/columns/:id(\\d+)', component: () => import('./views/ColumnDetail.vue'), props: true },
   { path: '/columns/:id(\\d+)/bewerken', component: () => import('./views/ColumnEditor.vue'), props: true, meta: { role: 'editor', title: 'Column bewerken' } },
+  { path: '/rooster', component: () => import('./views/Roster.vue'), meta: { role: 'editor', title: 'Dienstrooster' } },
   { path: '/leden', component: () => import('./views/Members.vue'), meta: { role: 'admin', title: 'Leden' } },
   { path: '/beheer/accounts', component: () => import('./views/AdminUsers.vue'), meta: { role: 'admin', title: 'Accounts' } },
   { path: '/account', component: () => import('./views/Account.vue'), meta: { role: 'user', title: 'Mijn account' } },

@@ -66,7 +66,8 @@ import { SITE } from '../site'
       <h2>Wie kan wat zien?</h2>
       <ul>
         <li><strong>Iedereen:</strong> de homepage, de teller, de columns (inclusief de voornaam van de schrijver), deze pagina en de over-ons-pagina.</li>
-        <li><strong>Ingelogde leden en editors:</strong> hun eigen accountgegevens. De ledenadministratie zien zij níet.</li>
+        <li><strong>Ingelogde leden:</strong> hun eigen accountgegevens.</li>
+        <li><strong>Editors:</strong> daarnaast het dienstrooster (alleen voornaam en dag). De rest van de ledenadministratie zien zij níet.</li>
         <li><strong>Alleen admins:</strong> de ledenadministratie (inclusief notities en welk account bij welk lid hoort) en alle accounts met e-mailadres.</li>
       </ul>
       <p>Zolang je account nog niet is goedgekeurd, kun je niet inloggen en zie je dus niks extra's.</p>

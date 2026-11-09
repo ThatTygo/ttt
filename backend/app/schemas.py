@@ -87,6 +87,11 @@ class MemberOut(Orm):
     user_id: int | None
 
 
+class RosterDay(BaseModel):
+    day: int
+    names: list[str]
+
+
 # --- Columns ------------------------------------------------------------
 
 
