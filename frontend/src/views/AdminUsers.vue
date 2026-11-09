@@ -44,7 +44,7 @@ async function remove(user, verb = 'verwijderen') {
     <p class="lead">Keur nieuwe aanmeldingen goed en bepaal wie wat mag.</p>
 
     <dl class="roles">
-      <div><dt><span class="badge">Lid</span></dt><dd>Mag kijken, ook naar de ledenadministratie. Kan niks bewerken.</dd></div>
+      <div><dt><span class="badge">Lid</span></dt><dd>Mag inloggen en kijken. Kan niks bewerken en ziet de ledenadministratie niet.</dd></div>
       <div><dt><span class="badge signal">Editor</span></dt><dd>Mag columns schrijven, aanpassen en verwijderen, en de teller bijwerken.</dd></div>
       <div><dt><span class="badge alarm">Admin</span></dt><dd>Alle rechten: accounts, rollen en de ledenadministratie.</dd></div>
     </dl>

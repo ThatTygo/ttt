@@ -31,7 +31,7 @@ async function logout() {
       <nav id="hoofdmenu" :class="{ open: menuOpen }">
         <RouterLink to="/columns">Columns</RouterLink>
         <RouterLink to="/over-ons">Over ons</RouterLink>
-        <RouterLink v-if="auth.user" to="/leden">Leden</RouterLink>
+        <RouterLink v-if="auth.can('admin')" to="/leden">Leden</RouterLink>
         <RouterLink v-if="auth.can('admin')" to="/beheer/accounts">Accounts</RouterLink>
         <span class="divider" />
         <template v-if="auth.user">

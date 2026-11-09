@@ -12,9 +12,9 @@ Website van de TTT: intro, over ons, privacybeleid, columns en een afgeschermde 
 | Rol | Mag |
 | --- | --- |
 | *bezoeker* | Home, columns, over ons, privacy lezen |
-| `user` | + ledenadministratie bekijken |
+| `user` | inloggen, eigen account beheren |
 | `editor` | + columns schrijven/bewerken/verwijderen, teller bijwerken |
-| `admin` | + accounts goedkeuren, rollen wijzigen, leden beheren |
+| `admin` | + accounts goedkeuren, rollen wijzigen, ledenadministratie bekijken en beheren |
 
 Nieuwe accounts krijgen de rol `user` met status *pending* en kunnen pas inloggen nadat een admin ze heeft goedgekeurd (menu **Accounts**).
 

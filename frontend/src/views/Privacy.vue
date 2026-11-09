@@ -43,7 +43,7 @@ import { SITE } from '../site'
           <tr>
             <td><strong>Ledenadministratie</strong></td>
             <td>Naam, bijnaam, functie, dienstdag, lid-sinds-datum, actief/oud-lid, eventueel een koppeling met een account en interne notities.</td>
-            <td>Om bij te houden wie er lid is en wie welke dagdienst draait.</td>
+            <td>Om bij te houden wie er lid is en wie welke dagdienst draait. Alleen admins kunnen dit inzien.</td>
             <td>Zolang je lid bent. Oud-leden worden op verzoek verwijderd.</td>
           </tr>
           <tr>
@@ -66,8 +66,8 @@ import { SITE } from '../site'
       <h2>Wie kan wat zien?</h2>
       <ul>
         <li><strong>Iedereen:</strong> de homepage, de teller, de columns (inclusief de voornaam van de schrijver), deze pagina en de over-ons-pagina.</li>
-        <li><strong>Goedgekeurde leden:</strong> daarnaast de ledenadministratie (zonder notities).</li>
-        <li><strong>Admins:</strong> daarnaast alle accounts met e-mailadres, de notities in de ledenadministratie en welk account bij welk lid hoort.</li>
+        <li><strong>Ingelogde leden en editors:</strong> hun eigen accountgegevens. De ledenadministratie zien zij níet.</li>
+        <li><strong>Alleen admins:</strong> de ledenadministratie (inclusief notities en welk account bij welk lid hoort) en alle accounts met e-mailadres.</li>
       </ul>
       <p>Zolang je account nog niet is goedgekeurd, kun je niet inloggen en zie je dus niks extra's.</p>
 

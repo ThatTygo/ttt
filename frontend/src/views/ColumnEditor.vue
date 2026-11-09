@@ -18,7 +18,11 @@ const isNew = computed(() => !props.id)
 const previewBody = computed(() => paragraphs(form.value.body))
 
 onMounted(async () => {
-  const [list, members] = await Promise.all([api('/columns?limit=1'), api('/members').catch(() => [])])
+  // De ledenlijst is alleen voor admins; editors krijgen alleen bestaande auteurs als suggestie.
+  const [list, members] = await Promise.all([
+    api('/columns?limit=1'),
+    auth.can('admin') ? api('/members') : Promise.resolve([]),
+  ])
   authors.value = [...new Set([...members.map((m) => m.name), ...list.authors])].sort()
   if (props.id) {
     const c = await api(`/columns/${props.id}`)

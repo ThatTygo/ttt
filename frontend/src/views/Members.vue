@@ -66,7 +66,7 @@ async function remove(m) {
   <div class="wrap page">
     <div class="row spread top">
       <div>
-        <span class="eyebrow">Alleen zichtbaar voor ingelogde leden</span>
+        <span class="eyebrow">Alleen zichtbaar voor admins</span>
         <h1>Ledenadministratie</h1>
         <p class="lead">Wie er bij de TTT hoort, wie welke dagdienst draait en wie welke functie bekleedt.</p>
       </div>
@@ -108,7 +108,7 @@ async function remove(m) {
         </label>
       </div>
       <label class="field">
-        <span>Notities (alleen zichtbaar voor admins)</span>
+        <span>Notities</span>
         <textarea v-model="editing.notes" rows="3" maxlength="2000" />
         <small>Zet hier geen gevoelige gegevens in (zie privacybeleid).</small>
       </label>
