@@ -68,6 +68,7 @@ onMounted(async () => {
     <div class="cards">
       <ColumnCard v-for="c in latest" :key="c.id" :column="c" />
     </div>
+    <p v-if="!latest.length" class="card muted">Nog geen columns. De eerste dagdienst moet nog beginnen.</p>
   </section>
 
   <section class="wrap quote-wrap">

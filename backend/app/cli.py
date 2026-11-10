@@ -6,33 +6,23 @@
 
 import getpass
 import sys
-from datetime import datetime
-from zoneinfo import ZoneInfo
 
 from sqlalchemy import func, select
 
 from . import models
 from .auth import hash_password
-from .config import settings
 from .db import Base, SessionLocal, engine
-from .seed_data import COLUMNS, COUNTER, MEMBERS
+from .seed_data import COUNTER, MEMBERS
 
 
 def init_db() -> None:
     Base.metadata.create_all(engine)
-    tz = ZoneInfo(settings.timezone)
     with SessionLocal() as db:
         if not db.scalar(select(func.count()).select_from(models.Member)):
             for name, nickname, function, shift_day, since in MEMBERS:
                 db.add(models.Member(name=name, nickname=nickname, function=function,
                                      shift_day=shift_day, member_since=since))
             print(f"{len(MEMBERS)} leden toegevoegd.")
-        if not db.scalar(select(func.count()).select_from(models.Column)):
-            for stamp, author, title, body in COLUMNS:
-                published = datetime.strptime(stamp, "%Y-%m-%d %H:%M").replace(tzinfo=tz)
-                db.add(models.Column(title=title, body=body, author_name=author,
-                                     published_at=published, updated_at=published))
-            print(f"{len(COLUMNS)} columns toegevoegd.")
         if db.get(models.Counter, 1) is None:
             db.add(models.Counter(id=1, **COUNTER))
         db.commit()
