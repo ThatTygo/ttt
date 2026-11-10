@@ -128,6 +128,9 @@ async function remove(m) {
             <td v-if="isAdmin" class="small">{{ userName(m.user_id) || '—' }}</td>
             <td v-if="isAdmin"><button class="btn sm ghost" @click="open(m)">Bewerken</button></td>
           </tr>
+          <tr v-if="!members.length">
+            <td :colspan="isAdmin ? 6 : 4" class="muted">Nog geen leden. Voeg de eerste toe met “+ Lid toevoegen”.</td>
+          </tr>
         </tbody>
       </table>
     </div>

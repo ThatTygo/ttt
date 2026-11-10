@@ -1,6 +1,6 @@
 """Beheercommando's.
 
-    python -m app.cli init-db                       tabellen aanmaken + startinhoud (alleen als leeg)
+    python -m app.cli init-db                       tabellen aanmaken (bestaande data blijft staan)
     python -m app.cli create-admin EMAIL NAAM       admin aanmaken of bestaand account admin maken
 """
 
@@ -12,20 +12,10 @@ from sqlalchemy import func, select
 from . import models
 from .auth import hash_password
 from .db import Base, SessionLocal, engine
-from .seed_data import COUNTER, MEMBERS
 
 
 def init_db() -> None:
     Base.metadata.create_all(engine)
-    with SessionLocal() as db:
-        if not db.scalar(select(func.count()).select_from(models.Member)):
-            for name, nickname, function, shift_day, since in MEMBERS:
-                db.add(models.Member(name=name, nickname=nickname, function=function,
-                                     shift_day=shift_day, member_since=since))
-            print(f"{len(MEMBERS)} leden toegevoegd.")
-        if db.get(models.Counter, 1) is None:
-            db.add(models.Counter(id=1, **COUNTER))
-        db.commit()
 
 
 def create_admin(email: str, name: str) -> None:

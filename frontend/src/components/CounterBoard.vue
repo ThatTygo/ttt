@@ -8,7 +8,7 @@ const props = defineProps({ counter: Object })
 const emit = defineEmits(['updated'])
 
 const days = computed(() => daysSince(props.counter?.last_incident_date))
-const digits = computed(() => String(days.value ?? 0).padStart(3, '0').split(''))
+const digits = computed(() => (days.value == null ? ['–', '–', '–'] : String(days.value).padStart(3, '0').split('')))
 
 const editing = ref(false)
 const form = ref({})
@@ -45,7 +45,7 @@ async function save() {
       <span>Dagen sinds het laatste stickerwaardige tramincident</span>
     </div>
 
-    <div class="flaps" :aria-label="`${days ?? 0} dagen`">
+    <div class="flaps" :aria-label="days == null ? 'Nog geen incident gelogd' : `${days} dagen`">
       <span v-for="(d, i) in digits" :key="i" class="flap" :style="{ animationDelay: `${i * 90}ms` }">{{ d }}</span>
     </div>
 

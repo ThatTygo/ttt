@@ -33,7 +33,7 @@ Strato-webhosting draait geen Python of PostgreSQL, dus je hebt een (kleine) VPS
    ```bash
    docker compose up -d --build
    ```
-   Bij de eerste start worden de tabellen aangemaakt en de leden en de teller ingeladen. Er staan nog geen columns en geen accounts in de database.
+   Bij de eerste start worden de tabellen aangemaakt. De database is dan leeg: geen accounts, leden of columns.
 5. **Eerste admin aanmaken:**
    ```bash
    docker compose exec api python -m app.cli create-admin jouw@email.nl Jouw Naam
@@ -75,7 +75,6 @@ backend/app/
   models.py        tabellen: users, sessions, members, columns, counter
   auth.py          wachtwoorden (Argon2), sessiecookies, rolcontrole, rate limiting
   routers/         API-endpoints per onderdeel
-  seed_data.py     startinhoud (leden + teller)
   cli.py           init-db, create-admin
 frontend/src/
   views/           pagina's
