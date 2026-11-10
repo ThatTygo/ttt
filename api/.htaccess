@@ -1,0 +1,19 @@
+# Alles onder /api/ gaat naar index.php, behalve install.php.
+# Daardoor zijn config.php en src/ (code, schema, startinhoud) nooit direct op te vragen.
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^(index|install)\.php$ - [L]
+  RewriteRule ^ index.php [L,QSA]
+</IfModule>
+
+# Extra slot op de deur voor het geval mod_rewrite ontbreekt.
+<FilesMatch "^config(\.sample)?\.php$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Deny from all
+  </IfModule>
+</FilesMatch>

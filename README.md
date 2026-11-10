@@ -1,11 +1,11 @@
 # Trauma Tram Tellers
 
-Website van de TTT: intro, over ons, privacybeleid, columns en een afgeschermde ledenadministratie.
+Website van de TTT: intro, over ons, privacybeleid, columns, dienstrooster en een afgeschermde ledenadministratie.
 
-- **Frontend:** Vue 3 + Vite (`frontend/`)
-- **Backend:** Python, FastAPI + SQLAlchemy (`backend/`)
-- **Database:** PostgreSQL
-- **Productie:** Docker Compose met Caddy (automatisch HTTPS via Let's Encrypt)
+- **Frontend:** Vue 3 + Vite (`frontend/`), gebouwd tot statische bestanden
+- **Backend:** PHP 8.1+ zonder framework (`api/`)
+- **Database:** MySQL / MariaDB
+- **Hosting:** gewone Strato-webhosting (Apache + PHP + MySQL), geen eigen server nodig
 
 ## Rollen
 
@@ -18,48 +18,55 @@ Website van de TTT: intro, over ons, privacybeleid, columns en een afgeschermde 
 
 Nieuwe accounts krijgen de rol `user` met status *pending* en kunnen pas inloggen nadat een admin ze heeft goedgekeurd (menu **Accounts**).
 
-## Live zetten
+## Live zetten op Strato
 
-Strato-webhosting draait geen Python of PostgreSQL, dus je hebt een (kleine) VPS nodig, bijv. een Strato VPS of een andere Linux-server in de EU. Het domein blijft gewoon bij Strato.
+Je hebt een Strato-pakket met webruimte, PHP en MySQL nodig. Alleen een domein ("Domain"-pakket) is niet genoeg.
 
-1. **Server:** installeer Docker (`curl -fsSL https://get.docker.com | sh`) en zet deze repo erop.
-2. **DNS bij Strato:** maak een A-record voor `@` en `www` naar het IP-adres van de server (en AAAA bij IPv6).
-3. **Config:**
+### Eenmalig in het Strato-panel
+
+1. **PHP-versie:** zet de PHP-versie op 8.2 of hoger.
+2. **SSL:** activeer het gratis SSL-certificaat voor je domein.
+3. **Database:** maak onder *Databases* een MySQL-database aan. Noteer de host, de databasenaam, de gebruiker en het wachtwoord.
+4. **Webroot:** kijk bij *Domeinen* naar welke map je domein wijst (bijv. `/ttt`). Daar komt de site in.
+
+### Bouwen en uploaden
+
+1. Pas het contactadres in `frontend/src/site.js` aan (dat komt in het privacybeleid) en bouw de site op je eigen computer (Node.js nodig):
    ```bash
-   cp .env.example .env
-   # vul DOMAIN en POSTGRES_PASSWORD in
+   ./build.sh
    ```
-4. **Starten:**
-   ```bash
-   docker compose up -d --build
-   ```
-   Bij de eerste start worden de tabellen aangemaakt en de leden en columns uit de groepsapp ingeladen.
-5. **Eerste admin aanmaken:**
-   ```bash
-   docker compose exec api python -m app.cli create-admin jouw@email.nl Jouw Naam
-   ```
-6. Pas `frontend/src/site.js` aan (contactadres voor het privacybeleid, hostingpartij) en bouw opnieuw.
+   Dit maakt de map `deploy/` aan.
+2. Maak `config.php` aan: kopieer `api/config.sample.php` naar `deploy/api/config.php` en vul in:
+   - de databasegegevens uit stap 3;
+   - `secret` en `install_key`: twee lange willekeurige teksten, bijv. via `php -r 'echo bin2hex(random_bytes(32));'` of een wachtwoordgenerator.
+3. Upload de **inhoud** van `deploy/` via SFTP (bijv. met FileZilla, host `ssh.strato.de`) naar de webroot van je domein. Let op dat de verborgen `.htaccess`-bestanden mee gaan.
+4. Ga naar `https://jouwdomein.nl/api/install.php` en vul de installatiecode (`install_key`), je naam, e-mailadres en wachtwoord in. Hiermee worden de tabellen aangemaakt, de columns en leden uit de groepsapp ingeladen en word jij admin.
+5. Verwijder `api/install.php` van de server. Zodra er een admin is, weigert het bestand overigens toch elke nieuwe installatie.
 
-Updaten: `git pull && docker compose up -d --build`.
+### Updaten
 
-Back-up van de database:
 ```bash
-docker compose exec db pg_dump -U ttt ttt > backup.sql
+./build.sh
 ```
+
+Upload daarna de inhoud van `deploy/` opnieuw. `config.php` zit niet in `deploy/`, dus die op de server blijft staan.
+
+### Back-up
+
+Maak via *Databases* in het Strato-panel (phpMyAdmin → Exporteren) af en toe een back-up.
 
 ## Lokaal ontwikkelen
 
 ```bash
 # Database
-docker run -d --name ttt-dev-db -e POSTGRES_USER=ttt -e POSTGRES_PASSWORD=ttt -e POSTGRES_DB=ttt -p 127.0.0.1:55432:5432 postgres:17-alpine
+docker run -d --name ttt-mysql -e MYSQL_DATABASE=ttt -e MYSQL_USER=ttt -e MYSQL_PASSWORD=ttt -e MYSQL_ROOT_PASSWORD=root -p 127.0.0.1:53306:3306 mysql:8.0
 
-# Backend
-cd backend
-uv venv && uv pip install -r requirements.txt
-printf 'DATABASE_URL=postgresql+psycopg://ttt:ttt@localhost:55432/ttt\nCOOKIE_SECURE=false\n' > .env
-.venv/bin/python -m app.cli init-db
-.venv/bin/python -m app.cli create-admin admin@example.com Admin
-.venv/bin/uvicorn app.main:app --port 8765 --reload
+# Config: kopieer api/config.sample.php naar api/config.php
+#   host 127.0.0.1, port 53306, name/user/password ttt, cookie_secure false
+
+# Backend (PHP's ingebouwde server)
+php -S 127.0.0.1:8765 api/index.php
+# Installeren: open http://127.0.0.1:8765/api/install.php
 
 # Frontend (andere terminal)
 cd frontend
@@ -70,17 +77,24 @@ API_URL=http://127.0.0.1:8765 npm run dev
 ## Structuur
 
 ```
-backend/app/
-  main.py          FastAPI-app
-  models.py        tabellen: users, sessions, members, columns, counter
-  auth.py          wachtwoorden (Argon2), sessiecookies, rolcontrole, rate limiting
-  routers/         API-endpoints per onderdeel
-  seed_data.py     startinhoud (leden + columns uit de groepsapp)
-  cli.py           init-db, create-admin
-frontend/src/
-  views/           pagina's
-  components/      teller-bord, columnkaart, logo
-  site.js          contactgegevens voor het privacybeleid
+api/
+  index.php           router: alle /api/*-verzoeken
+  install.php         eenmalige installatie
+  config.sample.php   voorbeeld voor config.php (die niet in git staat)
+  .htaccess           stuurt alles naar index.php, schermt config en src/ af
+  src/
+    bootstrap.php     database, validatie, JSON-responses
+    auth.php          wachtwoorden, sessiecookies, rolcontrole, rate limiting
+    handlers/         endpoints per onderdeel
+    schema.sql        tabellen
+    seed.json         startinhoud (leden + columns uit de groepsapp)
+frontend/
+  public/.htaccess    HTTPS, Vue-router-fallback, security headers
+  src/views/          pagina's
+  src/site.js         contactgegevens voor het privacybeleid
+build.sh              bouwt deploy/ om te uploaden
 ```
 
-Tabellen worden aangemaakt met `create_all`. Verander je later een bestaande tabel, voeg dan Alembic toe voor migraties.
+Wil je later een tabel aanpassen, voer de wijziging dan uit via phpMyAdmin en werk `api/src/schema.sql` bij.
+
+De eerdere versie met een Python-backend en Docker (voor een eigen server) staat in de git-geschiedenis, commit `9916457`.

@@ -1,6 +1,5 @@
 .env
 node_modules/
 dist/
-.venv/
-__pycache__/
-*.pyc
+deploy/
+api/config.php

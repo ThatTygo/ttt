@@ -30,7 +30,7 @@ import { SITE } from '../site'
         <tbody>
           <tr>
             <td><strong>Je account</strong></td>
-            <td>Naam, e-mailadres, wachtwoord (alleen als onomkeerbare Argon2-hash), rol, status, datum van aanmelden, goedkeuren en laatste login.</td>
+            <td>Naam, e-mailadres, wachtwoord (alleen als onomkeerbare hash, Argon2 of bcrypt), rol, status, datum van aanmelden, goedkeuren en laatste login.</td>
             <td>Om je te laten inloggen en te bepalen wat je mag zien en doen.</td>
             <td>Tot je je account verwijdert of een admin dat doet.</td>
           </tr>
@@ -54,9 +54,9 @@ import { SITE } from '../site'
           </tr>
           <tr>
             <td><strong>IP-adres</strong></td>
-            <td>Je IP-adres, alleen in het werkgeheugen van de server.</td>
-            <td>Om te voorkomen dat iemand eindeloos wachtwoorden probeert bij inloggen en aanmelden.</td>
-            <td>Maximaal 1 uur, en het wordt nooit naar schijf of database geschreven.</td>
+            <td>Een gehashte (niet terug te rekenen) versie van je IP-adres, alleen bij inloggen en aanmelden.</td>
+            <td>Om te voorkomen dat iemand eindeloos wachtwoorden probeert.</td>
+            <td>Maximaal 1 uur, daarna automatisch gewist.</td>
           </tr>
         </tbody>
       </table>
@@ -76,7 +76,7 @@ import { SITE } from '../site'
       <ul>
         <li>Geen analytics, trackers, advertenties of social-media-knoppen.</li>
         <li>Geen externe lettertypes of scripts: alles wordt vanaf onze eigen server geladen, dus je browser praat met niemand anders.</li>
-        <li>Geen toegangslogboeken met IP-adressen in onze applicatie.</li>
+        <li>Onze applicatie houdt geen toegangslogboeken bij. Strato kan als hostingpartij kortdurend technische serverlogs bewaren; daarvoor geldt <a href="https://www.strato.nl/over-strato/privacy/" rel="noopener">het privacybeleid van Strato</a>.</li>
         <li>We verkopen of delen je gegevens met niemand.</li>
       </ul>
 
@@ -105,7 +105,7 @@ import { SITE } from '../site'
 
       <h2>Beveiliging</h2>
       <p>
-        Wachtwoorden worden alleen als Argon2-hash opgeslagen, de sessiecookie is niet uit te lezen door JavaScript en wordt
+        Wachtwoorden worden alleen als onomkeerbare hash (Argon2 of bcrypt) opgeslagen, de sessiecookie is niet uit te lezen door JavaScript en wordt
         alleen via HTTPS verstuurd, en elke actie wordt op de server gecontroleerd op je rol (lid, editor of admin).
       </p>
 
