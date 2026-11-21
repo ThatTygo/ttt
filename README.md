@@ -35,6 +35,28 @@ Nederlandse varianten werken ook: `TAAK`/`TAKEN`, `KLAAR`, `VERVALT`, `VERGADERI
 
 Wie een taak krijgt, kan een mail ontvangen. Vul daarvoor de `SMTP_*`-regels in `.env` in (zie `.env.example`); zonder SMTP werkt alles behalve de mail. Iedereen kan de mails uitzetten onder **Mijn account**.
 
+**Mailen via Postfix op dezelfde server.** De API-container bereikt de server via `host.docker.internal`. Zet in `.env`:
+
+```
+SMTP_HOST=host.docker.internal
+SMTP_PORT=25
+SMTP_SECURITY=none
+SMTP_USER=
+SMTP_PASSWORD=
+SMTP_FROM=Trauma Tram Tellers <ict@traumatramtellers.nl>
+```
+
+Postfix moet dan luisteren op meer dan alleen `localhost` en mail van de Docker-netwerken (`172.16.0.0/12`) accepteren, en de firewall moet poort 25 vanuit die netwerken toelaten:
+
+```bash
+sudo postconf -e 'inet_interfaces = all'
+sudo postconf -e "mynetworks = $(postconf -h mynetworks) 172.16.0.0/12"
+sudo systemctl restart postfix
+sudo ufw allow from 172.16.0.0/12 to any port 25 proto tcp
+```
+
+Poort 25 blijft voor de buitenwereld dicht zolang de firewall alleen 22, 80 en 443 open heeft.
+
 ## Live zetten
 
 1. **Server:** installeer Docker (`curl -fsSL https://get.docker.com | sh`) en zet deze repo erop.
