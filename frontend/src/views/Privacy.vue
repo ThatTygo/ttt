@@ -49,7 +49,7 @@ import { SITE } from '../site'
           <tr>
             <td><strong>Columns</strong></td>
             <td>Titel, tekst, naam van de schrijver, datum. Intern ook welk account de column heeft geplaatst of het laatst bewerkt.</td>
-            <td>Om de columns te publiceren.</td>
+            <td>Om de columns met de leden te delen. Alleen ingelogde leden kunnen ze lezen.</td>
             <td>Tot de column wordt verwijderd.</td>
           </tr>
           <tr>
@@ -65,8 +65,8 @@ import { SITE } from '../site'
     <div class="prose">
       <h2>Wie kan wat zien?</h2>
       <ul>
-        <li><strong>Iedereen:</strong> de homepage, de teller, de columns (inclusief de voornaam van de schrijver), deze pagina en de over-ons-pagina.</li>
-        <li><strong>Ingelogde leden:</strong> hun eigen accountgegevens.</li>
+        <li><strong>Iedereen:</strong> de homepage, de teller, deze pagina en de over-ons-pagina.</li>
+        <li><strong>Ingelogde leden:</strong> daarnaast de columns (inclusief de naam van de schrijver) en hun eigen accountgegevens.</li>
         <li><strong>Editors:</strong> daarnaast het dienstrooster (alleen voornaam en dag). De rest van de ledenadministratie zien zij níet.</li>
         <li><strong>Alleen admins:</strong> de ledenadministratie (inclusief notities en welk account bij welk lid hoort) en alle accounts met e-mailadres.</li>
       </ul>

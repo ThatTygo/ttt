@@ -95,11 +95,21 @@ class RosterDay(BaseModel):
 # --- Columns ------------------------------------------------------------
 
 
+class IncidentIn(BaseModel):
+    """Optioneel bij het opslaan van een column: er was een stickerwaardig incident."""
+
+    day: date | None = None  # standaard de publicatiedatum van de column
+    text: str | None = Field(default=None, max_length=300)
+
+    _s = field_validator("text")(_strip)
+
+
 class ColumnIn(BaseModel):
     title: str = Field(min_length=1, max_length=160)
     body: str = Field(min_length=1, max_length=20000)
     author_name: str = Field(min_length=1, max_length=120)
     published_at: datetime | None = None
+    incident: IncidentIn | None = None
 
     _s = field_validator("title", "author_name")(_strip)
 
@@ -117,6 +127,7 @@ class ColumnOut(Orm):
     title: str
     body: str
     author_name: str
+    has_incident: bool
     published_at: datetime
     updated_at: datetime
 
@@ -125,6 +136,7 @@ class ColumnSummary(Orm):
     id: int
     title: str
     author_name: str
+    has_incident: bool
     published_at: datetime
     excerpt: str
 

@@ -1,13 +1,32 @@
+from zoneinfo import ZoneInfo
+
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session as DbSession
 
 from .. import schemas
-from ..auth import require_role
+from ..auth import current_user, require_role
+from ..config import settings
 from ..db import get_db
-from ..models import Column, User, now
+from ..models import Column, Counter, User, now
 
-router = APIRouter(prefix="/api/columns", tags=["columns"])
+# Columns zijn alleen voor ingelogde (goedgekeurde) leden.
+router = APIRouter(prefix="/api/columns", tags=["columns"], dependencies=[Depends(current_user)])
+
+
+def _log_incident(db: DbSession, column: Column, incident: schemas.IncidentIn) -> None:
+    """Een gemeld incident plakt een sticker en zet zo nodig de teller terug."""
+    counter = db.get(Counter, 1)
+    if counter is None:
+        counter = Counter(id=1, sticker_count=0)
+        db.add(counter)
+    day = incident.day or column.published_at.astimezone(ZoneInfo(settings.timezone)).date()
+    counter.sticker_count = (counter.sticker_count or 0) + 1
+    # Een column over een ouder incident zet de teller niet terug in de tijd.
+    if counter.last_incident_date is None or day >= counter.last_incident_date:
+        counter.last_incident_date = day
+        counter.last_incident_text = incident.text or column.title
+    column.has_incident = True
 
 
 def _excerpt(body: str, length: int = 220) -> str:
@@ -34,7 +53,12 @@ def list_columns(
     authors = db.scalars(select(Column.author_name).distinct().order_by(Column.author_name)).all()
     items = [
         schemas.ColumnSummary(
-            id=c.id, title=c.title, author_name=c.author_name, published_at=c.published_at, excerpt=_excerpt(c.body)
+            id=c.id,
+            title=c.title,
+            author_name=c.author_name,
+            has_incident=c.has_incident,
+            published_at=c.published_at,
+            excerpt=_excerpt(c.body),
         )
         for c in rows
     ]
@@ -60,6 +84,8 @@ def create_column(data: schemas.ColumnIn, user: User = Depends(require_role("edi
         updated_by_id=user.id,
     )
     db.add(column)
+    if data.incident:
+        _log_incident(db, column, data.incident)
     db.commit()
     return column
 
@@ -77,6 +103,9 @@ def update_column(
     if data.published_at:
         column.published_at = data.published_at
     column.updated_by_id = user.id
+    # Per column hooguit één sticker, ook als hij vaker wordt opgeslagen.
+    if data.incident and not column.has_incident:
+        _log_incident(db, column, data.incident)
     db.commit()
     return column
 

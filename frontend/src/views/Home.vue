@@ -10,10 +10,13 @@ const latest = ref([])
 const total = ref(0)
 
 onMounted(async () => {
-  const [c, cols] = await Promise.all([api('/counter'), api('/columns?limit=3')])
+  // Columns zijn alleen voor leden; bezoekers zien alleen de teller.
+  const [c, cols] = await Promise.all([api('/counter'), auth.user ? api('/columns?limit=3') : null])
   counter.value = c
-  latest.value = cols.items
-  total.value = cols.total
+  if (cols) {
+    latest.value = cols.items
+    total.value = cols.total
+  }
 })
 </script>
 
@@ -29,9 +32,14 @@ onMounted(async () => {
           Spoiler: er is meestal niks.
         </p>
         <div class="row">
-          <RouterLink to="/columns" class="btn signal">Lees de columns</RouterLink>
-          <RouterLink v-if="!auth.user" to="/aanmelden" class="btn ghost">Word lid</RouterLink>
-          <RouterLink v-else-if="auth.can('editor')" to="/columns/nieuw" class="btn ghost">Schrijf een column</RouterLink>
+          <template v-if="auth.user">
+            <RouterLink to="/columns" class="btn signal">Lees de columns</RouterLink>
+            <RouterLink v-if="auth.can('editor')" to="/columns/nieuw" class="btn ghost">Schrijf een column</RouterLink>
+          </template>
+          <template v-else>
+            <RouterLink to="/aanmelden" class="btn signal">Word lid</RouterLink>
+            <RouterLink to="/inloggen" class="btn ghost">Inloggen</RouterLink>
+          </template>
         </div>
       </div>
       <CounterBoard :counter="counter" @updated="counter = $event" />
@@ -57,7 +65,7 @@ onMounted(async () => {
     </div>
   </section>
 
-  <section class="wrap latest">
+  <section v-if="auth.user" class="wrap latest">
     <div class="row spread head">
       <div>
         <span class="eyebrow">Uit de dagdienst</span>
@@ -69,6 +77,20 @@ onMounted(async () => {
       <ColumnCard v-for="c in latest" :key="c.id" :column="c" />
     </div>
     <p v-if="!latest.length" class="card muted">Nog geen columns. De eerste dagdienst moet nog beginnen.</p>
+  </section>
+
+  <section v-else class="wrap latest">
+    <div class="card members-only">
+      <div>
+        <span class="eyebrow">Alleen voor leden</span>
+        <h2>De columns lees je als lid</h2>
+        <p class="muted">De dagelijkse verslagen van de dagdienst zijn alleen zichtbaar voor ingelogde leden.</p>
+      </div>
+      <div class="row">
+        <RouterLink to="/inloggen" class="btn">Inloggen</RouterLink>
+        <RouterLink to="/aanmelden" class="btn ghost">Aanmelden</RouterLink>
+      </div>
+    </div>
   </section>
 
   <section class="wrap quote-wrap">
@@ -106,6 +128,8 @@ h1 { font-size: clamp(3.6rem, 9vw, 6.6rem); line-height: 0.9; margin-bottom: 20p
 .latest { padding-bottom: 56px; }
 .head { align-items: end; margin-bottom: 20px; }
 .all { font-weight: 700; text-decoration: none; }
+.members-only { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+.members-only p { margin: 0; }
 .cards { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
 
 .quote-wrap { padding-bottom: 72px; }

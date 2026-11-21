@@ -1,21 +1,31 @@
 """Beheercommando's.
 
-    python -m app.cli init-db                       tabellen aanmaken (bestaande data blijft staan)
+    python -m app.cli init-db                       tabellen aanmaken/bijwerken (bestaande data blijft staan)
     python -m app.cli create-admin EMAIL NAAM       admin aanmaken of bestaand account admin maken
 """
 
 import getpass
 import sys
 
-from sqlalchemy import func, select
+from sqlalchemy import func, select, text
 
 from . import models
 from .auth import hash_password
 from .db import Base, SessionLocal, engine
 
 
+# create_all maakt alleen nieuwe tabellen aan; kolommen die later zijn
+# toegevoegd aan een bestaande tabel komen hier.
+MIGRATIONS = [
+    "ALTER TABLE columns ADD COLUMN IF NOT EXISTS has_incident BOOLEAN NOT NULL DEFAULT false",
+]
+
+
 def init_db() -> None:
     Base.metadata.create_all(engine)
+    with engine.begin() as conn:
+        for statement in MIGRATIONS:
+            conn.execute(text(statement))
 
 
 def create_admin(email: str, name: str) -> None:

@@ -11,19 +11,17 @@ Website van de TTT: intro, over ons, privacybeleid, columns en een afgeschermde 
 
 | Rol | Mag |
 | --- | --- |
-| *bezoeker* | Home, columns, over ons, privacy lezen |
-| `user` | inloggen, eigen account beheren |
-| `editor` | + columns schrijven/bewerken/verwijderen, teller bijwerken, dienstrooster bekijken |
+| *bezoeker* | Home (met teller), over ons, privacy lezen |
+| `user` | + columns lezen, eigen account beheren |
+| `editor` | + columns schrijven/bewerken/verwijderen (met "incident"-vinkje dat de teller bijwerkt), teller bijwerken, dienstrooster bekijken |
 | `admin` | + accounts goedkeuren, rollen wijzigen, ledenadministratie bekijken en beheren |
 
 Nieuwe accounts krijgen de rol `user` met status *pending* en kunnen pas inloggen nadat een admin ze heeft goedgekeurd (menu **Accounts**).
 
 ## Live zetten
 
-Strato-webhosting draait geen Python of PostgreSQL, dus je hebt een (kleine) VPS nodig, bijv. een Strato VPS of een andere Linux-server in de EU. Het domein blijft gewoon bij Strato.
-
 1. **Server:** installeer Docker (`curl -fsSL https://get.docker.com | sh`) en zet deze repo erop.
-2. **DNS bij Strato:** maak een A-record voor `@` en `www` naar het IP-adres van de server (en AAAA bij IPv6).
+2. **DNS:** maak een A-record voor `@` en `www` naar het IP-adres van de server (en AAAA bij IPv6).
 3. **Config:**
    ```bash
    cp .env.example .env

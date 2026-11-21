@@ -13,6 +13,8 @@ const authors = ref([])
 const error = ref('')
 const saving = ref(false)
 const preview = ref(false)
+const alreadyIncident = ref(false)
+const incident = ref({ on: false, day: '', text: '' })
 
 const isNew = computed(() => !props.id)
 const previewBody = computed(() => paragraphs(form.value.body))
@@ -27,6 +29,7 @@ onMounted(async () => {
   if (props.id) {
     const c = await api(`/columns/${props.id}`)
     form.value = { title: c.title, author_name: c.author_name, published_at: toLocalInput(c.published_at), body: c.body }
+    alreadyIncident.value = c.has_incident
   }
 })
 
@@ -35,6 +38,9 @@ async function save() {
   saving.value = true
   try {
     const body = { ...form.value, published_at: form.value.published_at || null }
+    if (incident.value.on && !alreadyIncident.value) {
+      body.incident = { day: incident.value.day || null, text: incident.value.text || null }
+    }
     const saved = isNew.value
       ? await api('/columns', { method: 'POST', body })
       : await api(`/columns/${props.id}`, { method: 'PUT', body })
@@ -94,6 +100,34 @@ async function save() {
         <small>Laat een witregel tussen alinea's.</small>
       </div>
 
+      <div v-if="alreadyIncident" class="incident done">
+        Bij deze column is al een sticker geplakt en is de teller bijgewerkt.
+      </div>
+      <div v-else class="incident" :class="{ on: incident.on }">
+        <label class="row check">
+          <input v-model="incident.on" type="checkbox" />
+          <span><strong>Er was een stickerwaardig tramincident</strong></span>
+        </label>
+        <template v-if="incident.on">
+          <p class="small muted">
+            Bij opslaan komt er een sticker bij en springt de teller "dagen sinds het laatste incident" naar deze datum.
+            Eerst de artikellink gedeeld in de groep?
+          </p>
+          <div class="grid-2">
+            <label class="field">
+              <span>Datum van het incident</span>
+              <input v-model="incident.day" type="date" />
+              <small>Leeg = datum van deze column.</small>
+            </label>
+            <label class="field">
+              <span>Korte omschrijving</span>
+              <input v-model="incident.text" maxlength="300" placeholder="Bijv. Tram ontspoord op de Van Baerlestraat" />
+              <small>Leeg = titel van de column.</small>
+            </label>
+          </div>
+        </template>
+      </div>
+
       <div class="row">
         <button class="btn signal" :disabled="saving">{{ isNew ? 'Publiceren' : 'Opslaan' }}</button>
         <RouterLink :to="isNew ? '/columns' : `/columns/${id}`" class="btn ghost">Annuleren</RouterLink>
@@ -103,6 +137,11 @@ async function save() {
 </template>
 
 <style scoped>
+.incident { border: 1.5px dashed var(--line); border-radius: 12px; padding: 14px 16px; margin-bottom: 18px; }
+.incident.on { border-style: solid; border-color: var(--alarm); }
+.incident.done { color: var(--muted); font-size: 0.9rem; }
+.incident .check { flex-wrap: nowrap; }
+.incident .field { margin-bottom: 0; }
 .label { font-size: 0.85rem; font-weight: 600; color: var(--ink-soft); }
 .tabs { display: flex; gap: 4px; background: var(--paper); border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
 .tabs button { border: 0; background: none; color: var(--muted); font: 600 0.8rem var(--sans); padding: 4px 12px; border-radius: 999px; cursor: pointer; }

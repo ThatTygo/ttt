@@ -1,6 +1,6 @@
 from datetime import date, datetime, timezone
 
-from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, String, Text, false
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .db import Base
@@ -68,6 +68,8 @@ class Column(Base):
     title: Mapped[str] = mapped_column(String(160))
     body: Mapped[str] = mapped_column(Text)
     author_name: Mapped[str] = mapped_column(String(120))
+    # Deze column meldde een stickerwaardig tramincident (en heeft de teller bijgewerkt).
+    has_incident: Mapped[bool] = mapped_column(Boolean, default=False, server_default=false())
     published_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now, index=True)
     created_by_id: Mapped[int | None] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"))
     updated_by_id: Mapped[int | None] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"))

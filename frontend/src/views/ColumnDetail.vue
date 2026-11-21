@@ -42,6 +42,7 @@ async function remove() {
     <article v-else-if="column">
       <header class="head">
         <span class="badge signal">Dagdienst van {{ column.author_name }}</span>
+        <span v-if="column.has_incident" class="badge alarm">Sticker geplakt</span>
         <h1>{{ column.title }}</h1>
         <p class="muted small">
           <time :datetime="column.published_at">{{ formatDate(column.published_at, true) }}</time>
