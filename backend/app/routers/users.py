@@ -19,12 +19,14 @@ def _admin_count(db: DbSession) -> int:
 
 @router.patch("/account", response_model=schemas.UserOut)
 def update_account(data: schemas.AccountUpdate, user: User = Depends(current_user), db: DbSession = Depends(get_db)):
-    if data.name:
-        user.name = data.name.strip()
     if data.new_password:
         if not data.current_password or not verify_password(user.password_hash, data.current_password):
             raise HTTPException(status.HTTP_400_BAD_REQUEST, "Je huidige wachtwoord klopt niet.")
         user.password_hash = hash_password(data.new_password)
+    if data.name:
+        user.name = data.name.strip()
+    if data.email_tasks is not None:
+        user.email_tasks = data.email_tasks
     db.commit()
     return user
 

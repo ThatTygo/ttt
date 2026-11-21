@@ -2,5 +2,5 @@
 export const SITE = {
   contactEmail: 'ict@traumatramtellers.nl',
   hostingProvider: 'onze VPS-hostingprovider (binnen de EU)',
-  privacyUpdated: '11 november 2026',
+  privacyUpdated: '21 november 2026',
 }

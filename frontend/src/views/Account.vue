@@ -9,6 +9,7 @@ const router = useRouter()
 const name = ref(auth.user.name)
 const pw = ref({ current: '', next: '' })
 const delPw = ref('')
+const emailTasks = ref(auth.user.email_tasks)
 const msg = ref({ kind: '', text: '' })
 
 function flash(kind, text) {
@@ -20,6 +21,16 @@ async function saveName() {
     auth.user = await api('/account', { method: 'PATCH', body: { name: name.value } })
     flash('ok', 'Naam opgeslagen.')
   } catch (e) {
+    flash('error', e.message)
+  }
+}
+
+async function saveEmailTasks() {
+  try {
+    auth.user = await api('/account', { method: 'PATCH', body: { email_tasks: emailTasks.value } })
+    flash('ok', emailTasks.value ? 'Je krijgt weer mail bij nieuwe taken.' : 'Je krijgt geen mail meer bij nieuwe taken.')
+  } catch (e) {
+    emailTasks.value = !emailTasks.value
     flash('error', e.message)
   }
 }
@@ -68,6 +79,14 @@ async function deleteAccount() {
       <button class="btn">Opslaan</button>
     </form>
 
+    <section v-if="auth.can('editor')" class="card">
+      <h3>E-mail</h3>
+      <label class="row check">
+        <input v-model="emailTasks" type="checkbox" @change="saveEmailTasks" />
+        <span>Stuur me een mail als ik in Pimpy een nieuwe taak krijg</span>
+      </label>
+    </section>
+
     <form class="card" @submit.prevent="savePassword">
       <h3>Wachtwoord wijzigen</h3>
       <label class="field"><span>Huidig wachtwoord</span><input v-model="pw.current" type="password" autocomplete="current-password" required /></label>
@@ -92,5 +111,6 @@ async function deleteAccount() {
 
 <style scoped>
 .card { margin-bottom: 16px; }
+.check { flex-wrap: nowrap; gap: 10px; font-weight: 600; }
 .danger-zone { border-color: color-mix(in srgb, var(--alarm) 40%, var(--line)); }
 </style>

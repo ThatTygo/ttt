@@ -1,6 +1,6 @@
 # Trauma Tram Tellers
 
-Website van de TTT: intro, over ons, privacybeleid, columns en een afgeschermde ledenadministratie.
+Website van de TTT: intro, over ons, privacybeleid, columns, Pimpy (notulen, taken en agenda) en een afgeschermde ledenadministratie.
 
 - **Frontend:** Vue 3 + Vite (`frontend/`)
 - **Backend:** Python, FastAPI + SQLAlchemy (`backend/`)
@@ -13,10 +13,27 @@ Website van de TTT: intro, over ons, privacybeleid, columns en een afgeschermde 
 | --- | --- |
 | *bezoeker* | Home (met teller), over ons, privacy lezen |
 | `user` | + columns lezen, eigen account beheren |
-| `editor` | + columns schrijven/bewerken/verwijderen (met "incident"-vinkje dat de teller bijwerkt), teller bijwerken, dienstrooster bekijken |
-| `admin` | + accounts goedkeuren, rollen wijzigen, ledenadministratie bekijken en beheren |
+| `editor` | + columns schrijven/bewerken/verwijderen (met "incident"-vinkje dat de teller bijwerkt), teller bijwerken, dienstrooster bekijken, Pimpy van de eigen groepen |
+| `admin` | + accounts goedkeuren, rollen wijzigen, ledenadministratie bekijken en beheren, Pimpy-groepen beheren en alles in Pimpy zien |
 
 Nieuwe accounts krijgen de rol `user` met status *pending* en kunnen pas inloggen nadat een admin ze heeft goedgekeurd (menu **Accounts**).
+
+## Pimpy
+
+Naar het voorbeeld van Pimpy in [viaduct](https://gitlab.com/studieverenigingvia/viaduct). Admins maken onder **Pimpy → Groepen** groepen aan (bijv. Bestuur) en kiezen de leden (editors en admins). Per groep voer je notulen in; regels in hoofdletters worden automatisch verwerkt:
+
+| Regel | Effect |
+| --- | --- |
+| `ACTIE Robin, Gijs: stickers bestellen` | Eén taak voor Robin en Gijs samen |
+| `ACTIES Robin, Gijs: notulen lezen` | Een aparte taak voor elk van hen |
+| `ACTIE: domein verlengen` | Taak voor de hele groep |
+| `DONE 1A, 2B` | Taken met deze codes worden afgerond |
+| `REMOVE 3C` | Taken met deze codes vervallen |
+| `MEETING 26-11-2026 13:30(2) Vergadering` | Vergadering op de agenda (duur in uren, standaard 1) |
+
+Nederlandse varianten werken ook: `TAAK`/`TAKEN`, `KLAAR`, `VERVALT`, `VERGADERING`. Namen worden vergeleken met de leden van de groep, dus een voornaam of kleine tikfout is genoeg. Tijdens het typen laat de site zien wat er gaat gebeuren en welke regels fout zijn.
+
+Wie een taak krijgt, kan een mail ontvangen. Vul daarvoor de `SMTP_*`-regels in `.env` in (zie `.env.example`); zonder SMTP werkt alles behalve de mail. Iedereen kan de mails uitzetten onder **Mijn account**.
 
 ## Live zetten
 
@@ -70,14 +87,16 @@ API_URL=http://127.0.0.1:8765 npm run dev
 ```
 backend/app/
   main.py          FastAPI-app
-  models.py        tabellen: users, sessions, members, columns, counter
+  models.py        tabellen: users, sessions, members, columns, counter, groups, minutes, tasks, meetings
   auth.py          wachtwoorden (Argon2), sessiecookies, rolcontrole, rate limiting
   routers/         API-endpoints per onderdeel
+  pimpy.py         notulen lezen: ACTIE/DONE/REMOVE/MEETING-regels
+  mail.py          e-mail via SMTP
   cli.py           init-db, create-admin
 frontend/src/
-  views/           pagina's
+  views/           pagina's (views/pimpy/ voor Pimpy)
   components/      teller-bord, columnkaart, logo
   site.js          contactgegevens voor het privacybeleid
 ```
 
-Tabellen worden aangemaakt met `create_all`. Verander je later een bestaande tabel, voeg dan Alembic toe voor migraties.
+Tabellen worden aangemaakt met `create_all`. Nieuwe kolommen in bestaande tabellen staan als `ALTER TABLE … IF NOT EXISTS` in `MIGRATIONS` in `cli.py` en worden bij elke start uitgevoerd.

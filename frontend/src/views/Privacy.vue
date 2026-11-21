@@ -53,6 +53,12 @@ import { SITE } from '../site'
             <td>Tot de column wordt verwijderd.</td>
           </tr>
           <tr>
+            <td><strong>Pimpy</strong></td>
+            <td>Groepen en wie erin zit, notulen van vergaderingen, taken met aan wie ze zijn toegewezen en hun status, vergaderingen in de agenda, en of je mail wilt bij een nieuwe taak.</td>
+            <td>Om vergaderingen en taken binnen het bestuur en commissies te organiseren.</td>
+            <td>Tot een admin de notulen, taak of groep verwijdert. Verwijder je je account, dan verdwijnt je naam bij je taken.</td>
+          </tr>
+          <tr>
             <td><strong>IP-adres</strong></td>
             <td>Je IP-adres, alleen in het werkgeheugen van de server.</td>
             <td>Om te voorkomen dat iemand eindeloos wachtwoorden probeert bij inloggen en aanmelden.</td>
@@ -67,8 +73,8 @@ import { SITE } from '../site'
       <ul>
         <li><strong>Iedereen:</strong> de homepage, de teller, deze pagina en de over-ons-pagina.</li>
         <li><strong>Ingelogde leden:</strong> daarnaast de columns (inclusief de naam van de schrijver) en hun eigen accountgegevens.</li>
-        <li><strong>Editors:</strong> daarnaast het dienstrooster (alleen voornaam en dag). De rest van de ledenadministratie zien zij níet.</li>
-        <li><strong>Alleen admins:</strong> de ledenadministratie (inclusief notities en welk account bij welk lid hoort) en alle accounts met e-mailadres.</li>
+        <li><strong>Editors:</strong> daarnaast het dienstrooster (alleen voornaam en dag), en in Pimpy de notulen, taken en vergaderingen van de groepen waar ze zelf in zitten. De rest van de ledenadministratie zien zij níet.</li>
+        <li><strong>Alleen admins:</strong> de ledenadministratie (inclusief notities en welk account bij welk lid hoort), alle accounts met e-mailadres, en Pimpy van alle groepen.</li>
       </ul>
       <p>Zolang je account nog niet is goedgekeurd, kun je niet inloggen en zie je dus niks extra's.</p>
 
@@ -77,7 +83,7 @@ import { SITE } from '../site'
         <li>Geen analytics, trackers, advertenties of social-media-knoppen.</li>
         <li>Geen externe lettertypes of scripts: alles wordt vanaf onze eigen server geladen, dus je browser praat met niemand anders.</li>
         <li>Geen toegangslogboeken met IP-adressen in onze applicatie.</li>
-        <li>We verkopen of delen je gegevens met niemand.</li>
+        <li>We verkopen of delen je gegevens met niemand. Alleen als je mail wilt bij een nieuwe taak, gaat die mail via onze mailprovider naar jouw e-mailadres.</li>
       </ul>
 
       <h2>Waar staan de gegevens?</h2>

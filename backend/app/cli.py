@@ -18,6 +18,7 @@ from .db import Base, SessionLocal, engine
 # toegevoegd aan een bestaande tabel komen hier.
 MIGRATIONS = [
     "ALTER TABLE columns ADD COLUMN IF NOT EXISTS has_incident BOOLEAN NOT NULL DEFAULT false",
+    "ALTER TABLE users ADD COLUMN IF NOT EXISTS email_tasks BOOLEAN NOT NULL DEFAULT true",
 ]
 
 

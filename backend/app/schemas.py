@@ -42,10 +42,12 @@ class UserOut(Orm):
     status: Status
     created_at: datetime
     last_login_at: datetime | None = None
+    email_tasks: bool = True
 
 
 class AccountUpdate(BaseModel):
     name: str | None = Field(default=None, min_length=2, max_length=80)
+    email_tasks: bool | None = None
     current_password: str | None = None
     new_password: str | None = Field(default=None, min_length=10, max_length=200)
 
@@ -161,3 +163,145 @@ class CounterOut(Orm):
     last_incident_text: str | None
     sticker_count: int
     updated_at: datetime
+
+
+# --- Pimpy --------------------------------------------------------------
+
+TaskStatus = Literal["new", "started", "done", "not_done", "finished", "deleted"]
+
+
+class UserRef(Orm):
+    id: int
+    name: str
+
+
+class GroupIn(BaseModel):
+    name: str = Field(min_length=1, max_length=80)
+    description: str | None = Field(default=None, max_length=300)
+    member_ids: list[int] = []
+
+    _s = field_validator("name", "description")(_strip)
+
+
+class GroupOut(Orm):
+    id: int
+    name: str
+    description: str | None
+    members: list[UserRef]
+
+
+class MinuteIn(BaseModel):
+    group_id: int
+    minute_date: date
+    content: str = Field(min_length=1, max_length=100000)
+
+
+class MinutePreviewIn(BaseModel):
+    group_id: int
+    content: str = Field(max_length=100000)
+
+
+class TaskOut(BaseModel):
+    id: int
+    code: str
+    title: str
+    content: str | None
+    status: TaskStatus
+    group: UserRef  # id + naam van de groep
+    users: list[UserRef]
+    minute_id: int | None
+    minute_date: date | None
+    line: int | None
+    created_at: datetime
+    updated_at: datetime
+
+
+class TaskIn(BaseModel):
+    group_id: int
+    title: str = Field(min_length=1, max_length=500)
+    content: str | None = Field(default=None, max_length=5000)
+    user_ids: list[int] = Field(min_length=1)
+
+    _s = field_validator("title", "content")(_strip)
+
+
+class TaskUpdate(BaseModel):
+    status: TaskStatus | None = None
+    title: str | None = Field(default=None, min_length=1, max_length=500)
+    content: str | None = Field(default=None, max_length=5000)
+    user_ids: list[int] | None = Field(default=None, min_length=1)
+
+    _s = field_validator("title", "content")(_strip)
+
+
+class MeetingIn(BaseModel):
+    group_id: int
+    title: str = Field(min_length=1, max_length=200)
+    start_at: datetime
+    hours: float = Field(default=1, gt=0, le=99)
+
+    _s = field_validator("title")(_strip)
+
+    @field_validator("start_at")
+    @classmethod
+    def _amsterdam(cls, value: datetime) -> datetime:
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=ZoneInfo(settings.timezone))
+        return value
+
+
+class MeetingOut(BaseModel):
+    id: int
+    title: str
+    start_at: datetime
+    end_at: datetime
+    group: UserRef
+    minute_id: int | None
+
+
+class MinuteSummary(BaseModel):
+    id: int
+    group: UserRef
+    minute_date: date
+    created_by: str | None
+    created_at: datetime
+    task_count: int
+    excerpt: str
+
+
+class MinuteOut(MinuteSummary):
+    content: str
+    tasks: list[TaskOut]
+    meetings: list[MeetingOut]
+
+
+class ParseErrorOut(BaseModel):
+    line: int
+    text: str
+    reason: str
+
+
+class PreviewTask(BaseModel):
+    line: int
+    title: str
+    users: list[str]
+
+
+class PreviewTaskRef(BaseModel):
+    code: str
+    title: str
+
+
+class PreviewMeeting(BaseModel):
+    line: int
+    title: str
+    start_at: datetime
+    end_at: datetime
+
+
+class MinutePreview(BaseModel):
+    tasks: list[PreviewTask]
+    done: list[PreviewTaskRef]
+    removed: list[PreviewTaskRef]
+    meetings: list[PreviewMeeting]
+    errors: list[ParseErrorOut]
