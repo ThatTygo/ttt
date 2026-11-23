@@ -1,0 +1,7 @@
+base   authttt
+author Trauma Tram Tellers
+email  ict@traumatramtellers.nl
+date   2026-11-23
+name   TTT-accounts
+desc   Inloggen via de accounts van traumatramtellers.nl (doorgegeven door Caddy)
+url    https://traumatramtellers.nl

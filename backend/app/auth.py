@@ -46,6 +46,9 @@ def start_session(db: DbSession, response: Response, user: User) -> None:
     db.add(Session(token_hash=_token_hash(token), user_id=user.id, expires_at=expires))
     user.last_login_at = now()
     db.commit()
+    if settings.cookie_domain:
+        # Oude cookie van vóór de wiki (alleen voor het hoofddomein) opruimen.
+        response.delete_cookie(COOKIE_NAME, path="/")
     response.set_cookie(
         COOKIE_NAME,
         token,
@@ -54,6 +57,7 @@ def start_session(db: DbSession, response: Response, user: User) -> None:
         secure=settings.cookie_secure,
         samesite="lax",
         path="/",
+        domain=settings.cookie_domain or None,
     )
 
 
@@ -63,6 +67,8 @@ def end_session(db: DbSession, request: Request, response: Response) -> None:
         db.query(Session).filter(Session.token_hash == _token_hash(token)).delete()
         db.commit()
     response.delete_cookie(COOKIE_NAME, path="/")
+    if settings.cookie_domain:
+        response.delete_cookie(COOKIE_NAME, path="/", domain=settings.cookie_domain)
 
 
 def current_user_optional(request: Request, db: DbSession = Depends(get_db)) -> User | None:

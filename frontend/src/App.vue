@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import TramLogo from './components/TramLogo.vue'
-import { auth } from './auth'
+import { WIKI_URL, auth } from './auth'
 
 const route = useRoute()
 const router = useRouter()
@@ -32,6 +32,7 @@ async function logout() {
         <RouterLink v-if="auth.user" to="/columns">Columns</RouterLink>
         <RouterLink to="/over-ons">Over ons</RouterLink>
         <RouterLink v-if="auth.can('editor')" to="/pimpy">Pimpy</RouterLink>
+        <a v-if="auth.can('editor')" :href="WIKI_URL">Wiki</a>
         <RouterLink v-if="auth.can('editor')" to="/rooster">Rooster</RouterLink>
         <RouterLink v-if="auth.can('admin')" to="/leden">Leden</RouterLink>
         <RouterLink v-if="auth.can('admin')" to="/beheer/accounts">Accounts</RouterLink>

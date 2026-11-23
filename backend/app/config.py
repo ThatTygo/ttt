@@ -8,10 +8,14 @@ class Settings(BaseSettings):
     # Zet op False tijdens lokaal ontwikkelen over http.
     cookie_secure: bool = True
     session_days: int = 30
+    # Bijv. "traumatramtellers.nl": de sessiecookie geldt dan ook op wiki.traumatramtellers.nl.
+    # Leeg = alleen het eigen domein.
+    cookie_domain: str = ""
     timezone: str = "Europe/Amsterdam"
 
     # Adres van de site, voor links in e-mails.
     site_url: str = "http://localhost:5173"
+    wiki_url: str = ""
     # E-mail (SMTP). Zonder smtp_host worden er geen mails verstuurd.
     smtp_host: str = ""
     smtp_port: int = 587

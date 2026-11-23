@@ -29,3 +29,33 @@
 www.{$DOMAIN} {
 	redir https://{$DOMAIN}{uri} permanent
 }
+
+# De wiki (DokuWiki). Alleen voor editors en admins: bij elk verzoek vraagt Caddy
+# aan de API wie er ingelogd is. Niet ingelogd → door naar het inlogscherm.
+wiki.{$DOMAIN} {
+	encode zstd gzip
+
+	route {
+		# Deze headers mogen alleen van de API komen, nooit van de bezoeker.
+		request_header -X-Ttt-User
+		request_header -X-Ttt-Name
+		request_header -X-Ttt-Email
+		request_header -X-Ttt-Groups
+
+		forward_auth api:8000 {
+			uri /api/auth/wiki
+			copy_headers X-Ttt-User X-Ttt-Name X-Ttt-Email X-Ttt-Groups
+		}
+
+		reverse_proxy wiki:8080
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		X-Frame-Options SAMEORIGIN
+		Referrer-Policy strict-origin-when-cross-origin
+		-Server
+	}
+	# Geen access log: zie privacybeleid.
+}

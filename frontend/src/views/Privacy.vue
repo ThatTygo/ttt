@@ -36,7 +36,7 @@ import { SITE } from '../site'
           </tr>
           <tr>
             <td><strong>Sessiecookie</strong></td>
-            <td>Eén cookie (<code>ttt_session</code>) met een willekeurige code. Op de server staat alleen een hash daarvan, met een vervaldatum.</td>
+            <td>Eén cookie (<code>ttt_session</code>) met een willekeurige code, geldig op traumatramtellers.nl en wiki.traumatramtellers.nl. De wiki zet daarnaast een eigen sessiecookie. Op de server staat alleen een hash daarvan, met een vervaldatum.</td>
             <td>Om je ingelogd te houden. Dit is een strikt noodzakelijke cookie, daarom vragen we er geen toestemming voor.</td>
             <td>Maximaal 30 dagen, of tot je uitlogt.</td>
           </tr>
@@ -59,6 +59,12 @@ import { SITE } from '../site'
             <td>Tot een admin de notulen, taak of groep verwijdert. Verwijder je je account, dan verdwijnt je naam bij je taken.</td>
           </tr>
           <tr>
+            <td><strong>Wiki</strong></td>
+            <td>Wikipagina's en hun bewerkingsgeschiedenis: wie wat wanneer heeft gewijzigd (je account-nummer en naam). Je IP-adres ziet de wiki niet.</td>
+            <td>Om kennis en afspraken van de TTT vast te leggen.</td>
+            <td>Tot een admin de pagina verwijdert.</td>
+          </tr>
+          <tr>
             <td><strong>IP-adres</strong></td>
             <td>Je IP-adres, alleen in het werkgeheugen van de server.</td>
             <td>Om te voorkomen dat iemand eindeloos wachtwoorden probeert bij inloggen en aanmelden.</td>
@@ -73,7 +79,7 @@ import { SITE } from '../site'
       <ul>
         <li><strong>Iedereen:</strong> de homepage, de teller, deze pagina en de over-ons-pagina.</li>
         <li><strong>Ingelogde leden:</strong> daarnaast de columns (inclusief de naam van de schrijver) en hun eigen accountgegevens.</li>
-        <li><strong>Editors:</strong> daarnaast het dienstrooster (alleen voornaam en dag), en in Pimpy de notulen, taken en vergaderingen van de groepen waar ze zelf in zitten. De rest van de ledenadministratie zien zij níet.</li>
+        <li><strong>Editors:</strong> daarnaast het dienstrooster (alleen voornaam en dag), in Pimpy de notulen, taken en vergaderingen van de groepen waar ze zelf in zitten, en de wiki op wiki.traumatramtellers.nl. De rest van de ledenadministratie zien zij níet.</li>
         <li><strong>Alleen admins:</strong> de ledenadministratie (inclusief notities en welk account bij welk lid hoort), alle accounts met e-mailadres, en Pimpy van alle groepen.</li>
       </ul>
       <p>Zolang je account nog niet is goedgekeurd, kun je niet inloggen en zie je dus niks extra's.</p>

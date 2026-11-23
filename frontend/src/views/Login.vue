@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { auth } from '../auth'
+import { auth, isWikiUrl } from '../auth'
 
 const route = useRoute()
 const router = useRouter()
@@ -16,7 +16,8 @@ async function submit() {
   try {
     await auth.login(email.value, password.value)
     const back = route.query.terug
-    router.push(typeof back === 'string' && back.startsWith('/') && !back.startsWith('//') ? back : '/')
+    if (isWikiUrl(back)) window.location.href = back
+    else router.push(typeof back === 'string' && back.startsWith('/') && !back.startsWith('//') ? back : '/')
   } catch (e) {
     error.value = e.message
   } finally {

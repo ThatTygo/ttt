@@ -57,6 +57,14 @@ sudo ufw allow from 172.16.0.0/12 to any port 25 proto tcp
 
 Poort 25 blijft voor de buitenwereld dicht zolang de firewall alleen 22, 80 en 443 open heeft.
 
+## Wiki
+
+Op `wiki.<domein>` draait [DokuWiki](https://www.dokuwiki.org) (map `wiki/`), alleen voor editors en admins. Er zijn geen aparte wiki-accounts: Caddy vraagt bij elk verzoek aan de API wie er is ingelogd (`/api/auth/wiki`, via `forward_auth`) en geeft naam en rol door aan DokuWiki (plugin `wiki/authttt`). Niet ingelogd → door naar het inlogscherm van de site en daarna terug naar de wiki. Admins zijn superuser in de wiki.
+
+Daarvoor geldt de sessiecookie ook op `wiki.<domein>` (`COOKIE_DOMAIN` in `docker-compose.yml`). De wiki-container is alleen via Caddy bereikbaar en de wikidata staat in het volume `wiki-data`.
+
+Nodig in DNS: een A-record (en AAAA) voor `wiki` naar de server, of een CNAME `wiki` → `@`.
+
 ## Live zetten
 
 1. **Server:** installeer Docker (`curl -fsSL https://get.docker.com | sh`) en zet deze repo erop.
@@ -79,9 +87,10 @@ Poort 25 blijft voor de buitenwereld dicht zolang de firewall alleen 22, 80 en 4
 
 Updaten: `git pull && docker compose up -d --build`.
 
-Back-up van de database:
+Back-up van de database en de wiki:
 ```bash
 docker compose exec db pg_dump -U ttt ttt > backup.sql
+docker compose exec wiki tar czf - -C /storage data conf > wiki-backup.tar.gz
 ```
 
 ## Lokaal ontwikkelen

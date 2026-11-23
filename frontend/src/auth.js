@@ -32,3 +32,17 @@ export const auth = reactive({
 
 export const ROLE_LABELS = { user: 'Lid', editor: 'Editor', admin: 'Admin' }
 export const DAYS = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', 'Zondag']
+
+/** Adres van de wiki: wiki.<dit domein>. */
+export const WIKI_URL = `${location.protocol}//wiki.${location.host}/`
+
+/** Alleen terugsturen naar de eigen wiki, nooit naar een willekeurige site. */
+export function isWikiUrl(value) {
+  if (typeof value !== 'string') return false
+  try {
+    const url = new URL(value)
+    return url.protocol === location.protocol && url.host === `wiki.${location.host}`
+  } catch {
+    return false
+  }
+}
