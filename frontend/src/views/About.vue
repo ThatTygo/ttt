@@ -15,7 +15,7 @@ const timeline = [
       <span class="eyebrow">Over ons</span>
       <h1>Wie zijn de Trauma Tram Tellers?</h1>
       <p class="lead">
-        Een Amsterdamse vriendengroep met een bijzondere hobby: het bijhouden van tramincidenten in Nederland, en dan vooral
+        Een Amsterdamse vriendengroep met een bijzondere hobby: het bijhouden van tramincidenten in Amsterdam, en dan vooral
         het uitblijven ervan.
       </p>
 
