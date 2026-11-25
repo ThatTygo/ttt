@@ -18,6 +18,10 @@ Website van de TTT: intro, over ons, privacybeleid, columns, Pimpy (notulen, tak
 
 Nieuwe accounts krijgen de rol `user` met status *pending* en kunnen pas inloggen nadat een admin ze heeft goedgekeurd (menu **Accounts**).
 
+## Reacties op columns
+
+Onder elke column kunnen ingelogde leden de column liken, reageren en reacties liken. Je kunt je eigen reacties bewerken en verwijderen; editors en admins kunnen elke reactie verwijderen. Verwijder je je account, dan verdwijnen ook je reacties en likes.
+
 ## Pimpy
 
 Naar het voorbeeld van Pimpy in [viaduct](https://gitlab.com/studieverenigingvia/viaduct). Admins maken onder **Pimpy → Groepen** groepen aan (bijv. Bestuur) en kiezen de leden (editors en admins). Per groep voer je notulen in; regels in hoofdletters worden automatisch verwerkt:

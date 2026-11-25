@@ -53,6 +53,12 @@ import { SITE } from '../site'
             <td>Tot de column wordt verwijderd.</td>
           </tr>
           <tr>
+            <td><strong>Reacties en likes</strong></td>
+            <td>Je reacties onder columns (tekst, tijdstip, of je hem bewerkt hebt) en welke columns en reacties je leuk vindt.</td>
+            <td>Om op columns te kunnen reageren. Ingelogde leden zien je reacties en wie iets leuk vond.</td>
+            <td>Tot je de reactie verwijdert, de column wordt verwijderd, of je je account verwijdert.</td>
+          </tr>
+          <tr>
             <td><strong>Pimpy</strong></td>
             <td>Groepen en wie erin zit, notulen van vergaderingen, taken met aan wie ze zijn toegewezen en hun status, vergaderingen in de agenda, en of je mail wilt bij een nieuwe taak.</td>
             <td>Om vergaderingen en taken binnen het bestuur en commissies te organiseren.</td>

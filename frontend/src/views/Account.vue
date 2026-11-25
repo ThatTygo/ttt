@@ -102,7 +102,7 @@ async function deleteAccount() {
 
     <form class="card danger-zone" @submit.prevent="deleteAccount">
       <h3>Account verwijderen</h3>
-      <p class="muted">Je account en sessies worden direct gewist. Columns die je schreef blijven staan onder je naam; vraag een admin als je die ook weg wilt.</p>
+      <p class="muted">Je account, sessies, reacties en likes worden direct gewist. Columns die je schreef blijven staan onder je naam; vraag een admin als je die ook weg wilt.</p>
       <label class="field"><span>Bevestig met je wachtwoord</span><input v-model="delPw" type="password" autocomplete="current-password" required /></label>
       <button class="btn danger">Account verwijderen</button>
     </form>

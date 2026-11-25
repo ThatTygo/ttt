@@ -141,6 +141,8 @@ class ColumnSummary(Orm):
     has_incident: bool
     published_at: datetime
     excerpt: str
+    like_count: int = 0
+    comment_count: int = 0
 
 
 class ColumnPage(BaseModel):
@@ -305,3 +307,39 @@ class MinutePreview(BaseModel):
     removed: list[PreviewTaskRef]
     meetings: list[PreviewMeeting]
     errors: list[ParseErrorOut]
+
+
+# --- Reacties op columns -------------------------------------------------
+
+
+class LikesOut(BaseModel):
+    count: int
+    liked: bool
+    names: list[str]  # wie er geliket heeft
+
+
+class CommentIn(BaseModel):
+    body: str = Field(min_length=1, max_length=2000)
+
+    _s = field_validator("body")(_strip)
+
+
+class CommentAuthor(BaseModel):
+    id: int
+    name: str
+
+
+class CommentOut(BaseModel):
+    id: int
+    body: str
+    author: CommentAuthor
+    created_at: datetime
+    edited_at: datetime | None
+    likes: LikesOut
+    can_edit: bool
+    can_delete: bool
+
+
+class ReactionsOut(BaseModel):
+    likes: LikesOut
+    comments: list[CommentOut]
