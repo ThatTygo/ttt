@@ -334,6 +334,15 @@ class LikesOut(BaseModel):
 
 class CommentIn(BaseModel):
     body: str = Field(min_length=1, max_length=2000)
+
+    _s = field_validator("body")(_strip)
+
+
+class CommentAuthor(BaseModel):
+    id: int
+    name: str
+
+
 # --- Meldingen -----------------------------------------------------------
 
 TicketKind = Literal["bug", "idee", "vraag"]
@@ -384,6 +393,8 @@ class CommentOut(BaseModel):
 class ReactionsOut(BaseModel):
     likes: LikesOut
     comments: list[CommentOut]
+
+
 class TicketMessageOut(BaseModel):
     id: int
     kind: str
