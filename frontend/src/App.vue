@@ -2,6 +2,7 @@
 import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import TramLogo from './components/TramLogo.vue'
+import UserAvatar from './components/UserAvatar.vue'
 import { WIKI_URL, auth } from './auth'
 
 const route = useRoute()
@@ -30,6 +31,7 @@ async function logout() {
 
       <nav id="hoofdmenu" :class="{ open: menuOpen }">
         <RouterLink v-if="auth.user" to="/columns">Columns</RouterLink>
+        <RouterLink v-if="auth.user" to="/profielen">Wie is wie</RouterLink>
         <RouterLink to="/over-ons">Over ons</RouterLink>
         <RouterLink v-if="auth.can('editor')" to="/pimpy">Pimpy</RouterLink>
         <a v-if="auth.can('editor')" :href="WIKI_URL">Wiki</a>
@@ -38,7 +40,10 @@ async function logout() {
         <RouterLink v-if="auth.can('admin')" to="/beheer/accounts">Accounts</RouterLink>
         <span class="divider" />
         <template v-if="auth.user">
-          <RouterLink to="/account" class="me">{{ auth.user.name }}</RouterLink>
+          <RouterLink to="/account" class="me" :title="`Mijn account (${auth.user.name})`">
+            <UserAvatar :user="auth.user" :size="30" />
+            <span>{{ auth.user.name }}</span>
+          </RouterLink>
           <button class="linkish" @click="logout">Uitloggen</button>
         </template>
         <template v-else>
@@ -88,7 +93,8 @@ nav#hoofdmenu { display: flex; align-items: center; gap: 22px; font-weight: 600;
 nav#hoofdmenu a:not(.btn) { text-decoration: none; padding: 4px 0; border-bottom: 2px solid transparent; }
 nav#hoofdmenu a:not(.btn):hover, nav#hoofdmenu a.router-link-active { border-bottom-color: var(--signal); }
 .divider { width: 1px; height: 22px; background: var(--line); }
-.me { max-width: 14ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.me { display: inline-flex; align-items: center; gap: 8px; }
+.me span { max-width: 14ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .linkish { background: none; border: 0; padding: 0; font: inherit; color: var(--muted); cursor: pointer; }
 .linkish:hover { color: var(--ink); }
 

@@ -35,6 +35,12 @@ import { SITE } from '../site'
             <td>Tot je je account verwijdert of een admin dat doet.</td>
           </tr>
           <tr>
+            <td><strong>Je profiel</strong></td>
+            <td>Als je die zelf invult: een profielfoto (verkleind, zonder locatie- of andere metadata) en een korte tekst over jezelf.</td>
+            <td>Zodat leden elkaar herkennen.</td>
+            <td>Tot je ze verwijdert onder <em>Mijn account</em>, of je account verwijdert.</td>
+          </tr>
+          <tr>
             <td><strong>Sessiecookie</strong></td>
             <td>Eén cookie (<code>ttt_session</code>) met een willekeurige code, geldig op traumatramtellers.nl en wiki.traumatramtellers.nl. De wiki zet daarnaast een eigen sessiecookie. Op de server staat alleen een hash daarvan, met een vervaldatum.</td>
             <td>Om je ingelogd te houden. Dit is een strikt noodzakelijke cookie, daarom vragen we er geen toestemming voor.</td>
@@ -78,7 +84,7 @@ import { SITE } from '../site'
       <h2>Wie kan wat zien?</h2>
       <ul>
         <li><strong>Iedereen:</strong> de homepage, de teller, deze pagina en de over-ons-pagina.</li>
-        <li><strong>Ingelogde leden:</strong> daarnaast de columns (inclusief de naam van de schrijver) en hun eigen accountgegevens.</li>
+        <li><strong>Ingelogde leden:</strong> daarnaast de columns (inclusief de naam van de schrijver), hun eigen accountgegevens, en van alle leden de naam, rol, profielfoto en tekst over zichzelf (niet het e-mailadres).</li>
         <li><strong>Editors:</strong> daarnaast het dienstrooster (alleen voornaam en dag), in Pimpy de notulen, taken en vergaderingen van de groepen waar ze zelf in zitten, en de wiki op wiki.traumatramtellers.nl. De rest van de ledenadministratie zien zij níet.</li>
         <li><strong>Alleen admins:</strong> de ledenadministratie (inclusief notities en welk account bij welk lid hoort), alle accounts met e-mailadres, en Pimpy van alle groepen.</li>
       </ul>

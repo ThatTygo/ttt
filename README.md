@@ -18,6 +18,10 @@ Website van de TTT: intro, over ons, privacybeleid, columns, Pimpy (notulen, tak
 
 Nieuwe accounts krijgen de rol `user` met status *pending* en kunnen pas inloggen nadat een admin ze heeft goedgekeurd (menu **Accounts**).
 
+## Profielen
+
+Elk lid heeft een profiel met profielfoto en een korte tekst over zichzelf (bewerken onder **Mijn account**). Onder **Wie is wie** staan alle leden; profielen zijn alleen zichtbaar voor ingelogde leden en tonen geen e-mailadres. Foto's worden bij het uploaden vierkant bijgesneden, verkleind tot 400×400 WebP (zonder metadata) en in de database opgeslagen, dus ze zitten in de gewone database-back-up.
+
 ## Pimpy
 
 Naar het voorbeeld van Pimpy in [viaduct](https://gitlab.com/studieverenigingvia/viaduct). Admins maken onder **Pimpy → Groepen** groepen aan (bijv. Bestuur) en kiezen de leden (editors en admins). Per groep voer je notulen in; regels in hoofdletters worden automatisch verwerkt:
