@@ -53,6 +53,12 @@ import { SITE } from '../site'
             <td>Tot de column wordt verwijderd.</td>
           </tr>
           <tr>
+            <td><strong>Meldingen</strong></td>
+            <td>Bugs, ideeën en vragen die je meldt: soort, titel, omschrijving, de pagina waar je was, en de berichten erbij. Admins kunnen interne notities toevoegen.</td>
+            <td>Om problemen met de site op te lossen. Alleen jij en de admins zien je meldingen.</td>
+            <td>Tot een admin de melding verwijdert. Verwijder je je account, dan blijft de melding bewaard zonder je naam.</td>
+          </tr>
+          <tr>
             <td><strong>Pimpy</strong></td>
             <td>Groepen en wie erin zit, notulen van vergaderingen, taken met aan wie ze zijn toegewezen en hun status, vergaderingen in de agenda, en of je mail wilt bij een nieuwe taak.</td>
             <td>Om vergaderingen en taken binnen het bestuur en commissies te organiseren.</td>

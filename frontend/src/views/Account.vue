@@ -95,6 +95,12 @@ async function deleteAccount() {
     </form>
 
     <section class="card">
+      <h3>Meldingen</h3>
+      <p class="muted">Bugs, ideeën of vragen over de site meld je met de knop <strong>Melden</strong> rechtsonder.</p>
+      <RouterLink to="/meldingen" class="btn ghost">Mijn meldingen</RouterLink>
+    </section>
+
+    <section class="card">
       <h3>Mijn gegevens</h3>
       <p class="muted">Download alles wat we over je account opslaan. Zie ook het <RouterLink to="/privacy">privacybeleid</RouterLink>.</p>
       <button class="btn ghost" @click="exportData">Gegevens downloaden</button>
@@ -102,7 +108,7 @@ async function deleteAccount() {
 
     <form class="card danger-zone" @submit.prevent="deleteAccount">
       <h3>Account verwijderen</h3>
-      <p class="muted">Je account en sessies worden direct gewist. Columns die je schreef blijven staan onder je naam; vraag een admin als je die ook weg wilt.</p>
+      <p class="muted">Je account en sessies worden direct gewist. Columns die je schreef blijven staan onder je naam; vraag een admin als je die ook weg wilt. Je meldingen blijven bewaard, maar zonder je naam.</p>
       <label class="field"><span>Bevestig met je wachtwoord</span><input v-model="delPw" type="password" autocomplete="current-password" required /></label>
       <button class="btn danger">Account verwijderen</button>
     </form>

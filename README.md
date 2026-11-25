@@ -18,6 +18,12 @@ Website van de TTT: intro, over ons, privacybeleid, columns, Pimpy (notulen, tak
 
 Nieuwe accounts krijgen de rol `user` met status *pending* en kunnen pas inloggen nadat een admin ze heeft goedgekeurd (menu **Accounts**).
 
+## Meldingen
+
+Iedere ingelogde gebruiker kan met de knop **Melden** (rechtsonder op elke pagina) een bug, idee of vraag melden; de huidige pagina wordt automatisch meegestuurd. Onder **Mijn meldingen** volg je de status en kun je reageren. Admins zien onder **Meldingen** (met een teller voor nieuwe meldingen) alles, stellen status, prioriteit en behandelaar in, en kunnen interne notities maken die de melder niet ziet. Reageert de melder op een opgeloste melding, dan gaat hij weer open.
+
+Als mail aanstaat (zie Pimpy) krijgen admins een mail bij een nieuwe melding, en de melder bij een antwoord of statuswijziging.
+
 ## Pimpy
 
 Naar het voorbeeld van Pimpy in [viaduct](https://gitlab.com/studieverenigingvia/viaduct). Admins maken onder **Pimpy → Groepen** groepen aan (bijv. Bestuur) en kiezen de leden (editors en admins). Per groep voer je notulen in; regels in hoofdletters worden automatisch verwerkt:
