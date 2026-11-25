@@ -1,6 +1,5 @@
 from fastapi import FastAPI
-from .routers import auth, columns, counter, members, pimpy, profiles, roster, tickets, users
-
+from .routers import auth, columns, counter, members, pimpy, reactions, profiles, roster, tickets, users
 
 app = FastAPI(title="Trauma Tram Tellers", docs_url=None, redoc_url=None, openapi_url=None)
 
@@ -10,6 +9,7 @@ app.include_router(profiles.router)
 app.include_router(members.router)
 app.include_router(roster.router)
 app.include_router(columns.router)
+app.include_router(reactions.router)
 app.include_router(counter.router)
 app.include_router(pimpy.router)
 app.include_router(tickets.router)

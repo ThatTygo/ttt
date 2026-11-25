@@ -8,7 +8,7 @@ from .. import schemas
 from ..auth import current_user, require_role
 from ..config import settings
 from ..db import get_db
-from ..models import Column, Counter, User, now
+from ..models import Column, ColumnLike, Comment, Counter, User, now
 
 # Columns zijn alleen voor ingelogde (goedgekeurde) leden.
 router = APIRouter(prefix="/api/columns", tags=["columns"], dependencies=[Depends(current_user)])
@@ -51,6 +51,13 @@ def list_columns(
     total = db.scalar(select(func.count()).select_from(query.subquery()))
     rows = db.scalars(query.order_by(Column.published_at.desc()).limit(limit).offset(offset)).all()
     authors = db.scalars(select(Column.author_name).distinct().order_by(Column.author_name)).all()
+    ids = [c.id for c in rows]
+    like_counts = dict(db.execute(
+        select(ColumnLike.column_id, func.count()).where(ColumnLike.column_id.in_(ids)).group_by(ColumnLike.column_id)
+    ).all())
+    comment_counts = dict(db.execute(
+        select(Comment.column_id, func.count()).where(Comment.column_id.in_(ids)).group_by(Comment.column_id)
+    ).all())
     items = [
         schemas.ColumnSummary(
             id=c.id,
@@ -59,6 +66,8 @@ def list_columns(
             has_incident=c.has_incident,
             published_at=c.published_at,
             excerpt=_excerpt(c.body),
+            like_count=like_counts.get(c.id, 0),
+            comment_count=comment_counts.get(c.id, 0),
         )
         for c in rows
     ]

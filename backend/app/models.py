@@ -190,6 +190,37 @@ class Meeting(Base):
     minute: Mapped[Minute | None] = relationship()
 
 
+# --- Reacties op columns -------------------------------------------------
+# Verwijder je je account, dan verdwijnen ook je reacties en likes (cascade).
+
+
+class ColumnLike(Base):
+    __tablename__ = "column_likes"
+
+    column_id: Mapped[int] = mapped_column(ForeignKey("columns.id", ondelete="CASCADE"), primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), primary_key=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class Comment(Base):
+    __tablename__ = "comments"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    column_id: Mapped[int] = mapped_column(ForeignKey("columns.id", ondelete="CASCADE"), index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    body: Mapped[str] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    edited_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+    user: Mapped[User] = relationship()
+
+
+class CommentLike(Base):
+    __tablename__ = "comment_likes"
+
+    comment_id: Mapped[int] = mapped_column(ForeignKey("comments.id", ondelete="CASCADE"), primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), primary_key=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
 # --- Meldingen (bugs, ideeën, vragen) ------------------------------------
 
 TICKET_KINDS = ("bug", "idee", "vraag")

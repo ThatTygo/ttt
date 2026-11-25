@@ -59,6 +59,10 @@ import { SITE } from '../site'
             <td>Tot de column wordt verwijderd.</td>
           </tr>
           <tr>
+            <td><strong>Reacties en likes</strong></td>
+            <td>Je reacties onder columns (tekst, tijdstip, of je hem bewerkt hebt) en welke columns en reacties je leuk vindt.</td>
+            <td>Om op columns te kunnen reageren. Ingelogde leden zien je reacties en wie iets leuk vond.</td>
+            <td>Tot je de reactie verwijdert, de column wordt verwijderd, of je je account verwijdert.</td>
             <td><strong>Meldingen</strong></td>
             <td>Bugs, ideeën en vragen die je meldt: soort, titel, omschrijving, de pagina waar je was, en de berichten erbij. Admins kunnen interne notities toevoegen.</td>
             <td>Om problemen met de site op te lossen. Alleen jij en de admins zien je meldingen.</td>

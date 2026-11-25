@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { api } from '../api'
 import { auth } from '../auth'
 import { formatDate, paragraphs } from '../format'
+import ColumnReactions from '../components/ColumnReactions.vue'
 
 const props = defineProps({ id: String })
 const router = useRouter()
@@ -61,6 +62,8 @@ async function remove() {
         <span class="muted small">Geschreven door</span>
         <strong>{{ column.author_name }}</strong>
       </footer>
+
+      <ColumnReactions :column-id="column.id" />
     </article>
   </div>
 </template>

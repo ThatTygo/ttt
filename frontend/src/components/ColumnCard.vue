@@ -14,7 +14,13 @@ defineProps({ column: { type: Object, required: true } })
       <span v-if="column.has_incident" class="sticker">Sticker geplakt</span>
       <h3>{{ column.title }}</h3>
       <p>{{ column.excerpt }}</p>
-      <span class="more">Lees verder →</span>
+      <div class="foot">
+        <span class="more">Lees verder →</span>
+        <span v-if="column.like_count || column.comment_count" class="stats small">
+          <span :title="`${column.like_count} keer leuk gevonden`">♥ {{ column.like_count }}</span>
+          <span :title="`${column.comment_count} reacties`">💬 {{ column.comment_count }}</span>
+        </span>
+      </div>
     </RouterLink>
   </article>
 </template>
@@ -39,5 +45,7 @@ defineProps({ column: { type: Object, required: true } })
 h3 { font-size: 1.7rem; }
 .sticker { align-self: flex-start; margin-bottom: 8px; padding: 2px 10px; border-radius: 999px; background: var(--alarm); color: #fff; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
 p { font-family: var(--serif); color: var(--ink-soft); font-size: 1rem; line-height: 1.6; flex: 1; }
+.foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.stats { display: inline-flex; gap: 10px; color: var(--muted); font-weight: 600; }
 .more { font-weight: 700; font-size: 0.85rem; }
 </style>
