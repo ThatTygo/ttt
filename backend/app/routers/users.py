@@ -1,3 +1,5 @@
+import base64
+
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session as DbSession
@@ -6,6 +8,7 @@ from .. import schemas
 from ..auth import current_user, end_session, hash_password, require_role, verify_password
 from ..db import get_db
 from ..models import User, now
+from .profiles import user_avatar
 
 router = APIRouter(prefix="/api", tags=["users"])
 
@@ -27,6 +30,8 @@ def update_account(data: schemas.AccountUpdate, user: User = Depends(current_use
         user.name = data.name.strip()
     if data.email_tasks is not None:
         user.email_tasks = data.email_tasks
+    if data.bio is not None:
+        user.bio = data.bio.strip() or None
     db.commit()
     return user
 
@@ -34,9 +39,11 @@ def update_account(data: schemas.AccountUpdate, user: User = Depends(current_use
 @router.get("/account/export")
 def export_account(user: User = Depends(current_user)):
     """Inzagerecht (AVG art. 15): alles wat we over het account opslaan."""
+    avatar = user_avatar(user)
     return {
         "account": schemas.UserOut.model_validate(user).model_dump(mode="json"),
         "actieve_sessies": len(user.sessions),
+        "profielfoto": f"data:image/webp;base64,{base64.b64encode(avatar).decode()}" if avatar else None,
     }
 
 

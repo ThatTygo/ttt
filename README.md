@@ -18,6 +18,9 @@ Website van de TTT: intro, over ons, privacybeleid, columns, Pimpy (notulen, tak
 
 Nieuwe accounts krijgen de rol `user` met status *pending* en kunnen pas inloggen nadat een admin ze heeft goedgekeurd (menu **Accounts**).
 
+## Profielen
+
+Elk lid heeft een profiel met profielfoto en een korte tekst over zichzelf (bewerken onder **Mijn account**). Onder **Wie is wie** staan alle leden; profielen zijn alleen zichtbaar voor ingelogde leden en tonen geen e-mailadres. Foto's worden bij het uploaden vierkant bijgesneden, verkleind tot 400×400 WebP (zonder metadata) en in de database opgeslagen, dus ze zitten in de gewone database-back-up.
 ## Meldingen
 
 Iedere ingelogde gebruiker kan met de knop **Melden** (rechtsonder op elke pagina) een bug, idee of vraag melden; de huidige pagina wordt automatisch meegestuurd. Onder **Mijn meldingen** volg je de status en kun je reageren. Admins zien onder **Meldingen** (met een teller voor nieuwe meldingen) alles, stellen status, prioriteit en behandelaar in, en kunnen interne notities maken die de melder niet ziet. Reageert de melder op een opgeloste melding, dan gaat hij weer open.

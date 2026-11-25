@@ -43,6 +43,8 @@ class UserOut(Orm):
     created_at: datetime
     last_login_at: datetime | None = None
     email_tasks: bool = True
+    bio: str | None = None
+    avatar_url: str | None = None
 
 
 class AccountUpdate(BaseModel):
@@ -50,6 +52,18 @@ class AccountUpdate(BaseModel):
     email_tasks: bool | None = None
     current_password: str | None = None
     new_password: str | None = Field(default=None, min_length=10, max_length=200)
+    bio: str | None = Field(default=None, max_length=500)
+
+
+class ProfileOut(Orm):
+    """Wat andere leden van je zien (geen e-mailadres)."""
+
+    id: int
+    name: str
+    role: Role
+    bio: str | None
+    avatar_url: str | None
+    created_at: datetime
 
 
 class PasswordConfirm(BaseModel):

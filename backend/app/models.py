@@ -1,6 +1,6 @@
 from datetime import date, datetime, timezone
 
-from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, String, Table, Text, false, true
+from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, LargeBinary, String, Table, Text, false, true
 from sqlalchemy import Column as SqlColumn
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -29,10 +29,28 @@ class User(Base):
     last_login_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     # Mail ontvangen bij een nieuwe Pimpy-taak.
     email_tasks: Mapped[bool] = mapped_column(Boolean, default=True, server_default=true())
+    # Profiel: korte tekst over jezelf; tijdstip van de laatste profielfoto (ook voor cache).
+    bio: Mapped[str | None] = mapped_column(Text)
+    avatar_updated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
     sessions: Mapped[list["Session"]] = relationship(
         back_populates="user", cascade="all, delete-orphan", passive_deletes=True
     )
+
+    @property
+    def avatar_url(self) -> str | None:
+        if self.avatar_updated_at is None:
+            return None
+        return f"/api/users/{self.id}/avatar?v={int(self.avatar_updated_at.timestamp())}"
+
+
+class Avatar(Base):
+    """Profielfoto, al verkleind tot een vierkante WebP."""
+
+    __tablename__ = "avatars"
+
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    image: Mapped[bytes] = mapped_column(LargeBinary)
 
 
 class Session(Base):

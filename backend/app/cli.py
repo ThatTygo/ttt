@@ -19,6 +19,8 @@ from .db import Base, SessionLocal, engine
 MIGRATIONS = [
     "ALTER TABLE columns ADD COLUMN IF NOT EXISTS has_incident BOOLEAN NOT NULL DEFAULT false",
     "ALTER TABLE users ADD COLUMN IF NOT EXISTS email_tasks BOOLEAN NOT NULL DEFAULT true",
+    "ALTER TABLE users ADD COLUMN IF NOT EXISTS bio TEXT",
+    "ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_updated_at TIMESTAMPTZ",
 ]
 
 

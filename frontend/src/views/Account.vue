@@ -4,9 +4,13 @@ import { useRouter } from 'vue-router'
 import { api } from '../api'
 import { ROLE_LABELS, auth } from '../auth'
 import { formatDate } from '../format'
+import UserAvatar from '../components/UserAvatar.vue'
 
 const router = useRouter()
 const name = ref(auth.user.name)
+const bio = ref(auth.user.bio || '')
+const uploading = ref(false)
+const fileInput = ref(null)
 const pw = ref({ current: '', next: '' })
 const delPw = ref('')
 const emailTasks = ref(auth.user.email_tasks)
@@ -16,10 +20,36 @@ function flash(kind, text) {
   msg.value = { kind, text }
 }
 
-async function saveName() {
+async function saveProfile() {
   try {
-    auth.user = await api('/account', { method: 'PATCH', body: { name: name.value } })
-    flash('ok', 'Naam opgeslagen.')
+    auth.user = await api('/account', { method: 'PATCH', body: { name: name.value, bio: bio.value } })
+    flash('ok', 'Profiel opgeslagen.')
+  } catch (e) {
+    flash('error', e.message)
+  }
+}
+
+async function uploadAvatar(event) {
+  const file = event.target.files[0]
+  event.target.value = ''
+  if (!file) return
+  if (file.size > 8 * 1024 * 1024) return flash('error', 'De foto is te groot (maximaal 8 MB).')
+  uploading.value = true
+  try {
+    auth.user = await api('/account/avatar', { method: 'PUT', body: file })
+    flash('ok', 'Profielfoto opgeslagen.')
+  } catch (e) {
+    flash('error', e.message)
+  } finally {
+    uploading.value = false
+  }
+}
+
+async function removeAvatar() {
+  if (!confirm('Je profielfoto verwijderen?')) return
+  try {
+    auth.user = await api('/account/avatar', { method: 'DELETE' })
+    flash('ok', 'Profielfoto verwijderd.')
   } catch (e) {
     flash('error', e.message)
   }
@@ -69,13 +99,33 @@ async function deleteAccount() {
   <div class="narrow page">
     <span class="eyebrow">{{ ROLE_LABELS[auth.user.role] }} · lid sinds {{ formatDate(auth.user.created_at) }}</span>
     <h1>Mijn account</h1>
-    <p class="muted">{{ auth.user.email }}</p>
+    <p class="muted">{{ auth.user.email }} · <RouterLink :to="`/profiel/${auth.user.id}`">Bekijk je profiel</RouterLink></p>
 
     <div v-if="msg.text" class="notice" :class="msg.kind">{{ msg.text }}</div>
 
-    <form class="card" @submit.prevent="saveName">
-      <h3>Naam</h3>
+    <section class="card">
+      <h3>Profielfoto</h3>
+      <div class="row photo">
+        <UserAvatar :user="auth.user" :size="96" />
+        <div class="row">
+          <button type="button" class="btn sm" :disabled="uploading" @click="fileInput.click()">
+            {{ uploading ? 'Bezig met uploaden…' : auth.user.avatar_url ? 'Andere foto kiezen' : 'Foto kiezen' }}
+          </button>
+          <button v-if="auth.user.avatar_url" type="button" class="btn sm ghost" @click="removeAvatar">Verwijderen</button>
+          <input ref="fileInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif" hidden @change="uploadAvatar" />
+        </div>
+      </div>
+      <small class="muted">JPG, PNG, WebP of GIF, maximaal 8 MB. De foto wordt vierkant bijgesneden; locatiegegevens in de foto worden verwijderd.</small>
+    </section>
+
+    <form class="card" @submit.prevent="saveProfile">
+      <h3>Profiel</h3>
       <label class="field"><span>Weergavenaam</span><input v-model="name" required minlength="2" maxlength="80" /></label>
+      <label class="field">
+        <span>Over jezelf</span>
+        <textarea v-model="bio" rows="4" maxlength="500" placeholder="Bijv. favoriete tramlijn, dagdienst, of je beste tramtrauma." />
+        <small>{{ bio.length }}/500 · zichtbaar voor alle ingelogde leden</small>
+      </label>
       <button class="btn">Opslaan</button>
     </form>
 
@@ -117,6 +167,7 @@ async function deleteAccount() {
 
 <style scoped>
 .card { margin-bottom: 16px; }
+.photo { gap: 20px; margin-bottom: 10px; }
 .check { flex-wrap: nowrap; gap: 10px; font-weight: 600; }
 .danger-zone { border-color: color-mix(in srgb, var(--alarm) 40%, var(--line)); }
 </style>
