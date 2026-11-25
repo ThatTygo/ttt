@@ -43,6 +43,8 @@ class UserOut(Orm):
     created_at: datetime
     last_login_at: datetime | None = None
     email_tasks: bool = True
+    bio: str | None = None
+    avatar_url: str | None = None
 
 
 class AccountUpdate(BaseModel):
@@ -50,6 +52,18 @@ class AccountUpdate(BaseModel):
     email_tasks: bool | None = None
     current_password: str | None = None
     new_password: str | None = Field(default=None, min_length=10, max_length=200)
+    bio: str | None = Field(default=None, max_length=500)
+
+
+class ProfileOut(Orm):
+    """Wat andere leden van je zien (geen e-mailadres)."""
+
+    id: int
+    name: str
+    role: Role
+    bio: str | None
+    avatar_url: str | None
+    created_at: datetime
 
 
 class PasswordConfirm(BaseModel):
@@ -320,11 +334,38 @@ class LikesOut(BaseModel):
 
 class CommentIn(BaseModel):
     body: str = Field(min_length=1, max_length=2000)
+# --- Meldingen -----------------------------------------------------------
+
+TicketKind = Literal["bug", "idee", "vraag"]
+TicketStatus = Literal["open", "in_behandeling", "opgelost", "gesloten"]
+TicketPriority = Literal["laag", "normaal", "hoog", "urgent"]
+
+
+class TicketIn(BaseModel):
+    kind: TicketKind = "bug"
+    title: str = Field(min_length=3, max_length=160)
+    description: str = Field(min_length=1, max_length=5000)
+    page: str | None = Field(default=None, max_length=300)
+
+    _s = field_validator("title", "description", "page")(_strip)
+
+
+class TicketUpdate(BaseModel):
+    status: TicketStatus | None = None
+    priority: TicketPriority | None = None
+    assignee_id: int | None = None
+    # assignee_id expliciet op null zetten = niemand toegewezen
+    unassign: bool = False
+
+
+class TicketMessageIn(BaseModel):
+    body: str = Field(min_length=1, max_length=5000)
+    internal: bool = False
 
     _s = field_validator("body")(_strip)
 
 
-class CommentAuthor(BaseModel):
+class PersonRef(BaseModel):
     id: int
     name: str
 
@@ -343,3 +384,32 @@ class CommentOut(BaseModel):
 class ReactionsOut(BaseModel):
     likes: LikesOut
     comments: list[CommentOut]
+class TicketMessageOut(BaseModel):
+    id: int
+    kind: str
+    body: str
+    internal: bool
+    author: PersonRef | None
+    from_admin: bool
+    created_at: datetime
+
+
+class TicketSummary(BaseModel):
+    id: int
+    kind: TicketKind
+    title: str
+    status: TicketStatus
+    priority: TicketPriority
+    reporter: PersonRef | None
+    assignee: PersonRef | None
+    message_count: int
+    created_at: datetime
+    updated_at: datetime
+
+
+class TicketOut(TicketSummary):
+    description: str
+    page: str | None
+    closed_at: datetime | None
+    messages: list[TicketMessageOut]
+    can_reply: bool

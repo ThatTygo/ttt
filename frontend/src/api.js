@@ -10,11 +10,12 @@ function messageFrom(status, body) {
   if (typeof detail === 'string') return detail
   if (Array.isArray(detail)) {
     // Validatiefouten van FastAPI omzetten naar iets leesbaars.
-    const fields = { email: 'E-mailadres', password: 'Wachtwoord', new_password: 'Nieuw wachtwoord', name: 'Naam', title: 'Titel', body: 'Tekst', author_name: 'Auteur' }
+    const fields = { email: 'E-mailadres', password: 'Wachtwoord', new_password: 'Nieuw wachtwoord', name: 'Naam', title: 'Titel', body: 'Tekst', author_name: 'Auteur', bio: 'Over jezelf' }
     return detail
       .map((d) => {
         const field = fields[d.loc?.at(-1)] || d.loc?.at(-1)
         if (d.type === 'string_too_short') return `${field} is te kort (minimaal ${d.ctx?.min_length} tekens).`
+        if (d.type === 'string_too_long') return `${field} is te lang (maximaal ${d.ctx?.max_length} tekens).`
         if (d.type === 'value_error' && field === 'E-mailadres') return 'Vul een geldig e-mailadres in.'
         return `${field}: ${d.msg}`
       })
@@ -23,12 +24,14 @@ function messageFrom(status, body) {
   return `Er ging iets mis (${status}).`
 }
 
+/** `body` is JSON, of een bestand (File/Blob) dat ongewijzigd wordt verstuurd. */
 export async function api(path, { method = 'GET', body } = {}) {
+  const isFile = body instanceof Blob
   const res = await fetch(`/api${path}`, {
     method,
     credentials: 'same-origin',
-    headers: body !== undefined ? { 'Content-Type': 'application/json' } : {},
-    body: body !== undefined ? JSON.stringify(body) : undefined,
+    headers: body === undefined ? {} : { 'Content-Type': isFile ? body.type || 'application/octet-stream' : 'application/json' },
+    body: body === undefined ? undefined : isFile ? body : JSON.stringify(body),
   })
   if (res.status === 204) return null
   const data = await res.json().catch(() => null)

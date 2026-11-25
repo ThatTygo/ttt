@@ -21,6 +21,14 @@ Nieuwe accounts krijgen de rol `user` met status *pending* en kunnen pas inlogge
 ## Reacties op columns
 
 Onder elke column kunnen ingelogde leden de column liken, reageren en reacties liken. Je kunt je eigen reacties bewerken en verwijderen; editors en admins kunnen elke reactie verwijderen. Verwijder je je account, dan verdwijnen ook je reacties en likes.
+## Profielen
+
+Elk lid heeft een profiel met profielfoto en een korte tekst over zichzelf (bewerken onder **Mijn account**). Onder **Wie is wie** staan alle leden; profielen zijn alleen zichtbaar voor ingelogde leden en tonen geen e-mailadres. Foto's worden bij het uploaden vierkant bijgesneden, verkleind tot 400×400 WebP (zonder metadata) en in de database opgeslagen, dus ze zitten in de gewone database-back-up.
+## Meldingen
+
+Iedere ingelogde gebruiker kan met de knop **Melden** (rechtsonder op elke pagina) een bug, idee of vraag melden; de huidige pagina wordt automatisch meegestuurd. Onder **Mijn meldingen** volg je de status en kun je reageren. Admins zien onder **Meldingen** (met een teller voor nieuwe meldingen) alles, stellen status, prioriteit en behandelaar in, en kunnen interne notities maken die de melder niet ziet. Reageert de melder op een opgeloste melding, dan gaat hij weer open.
+
+Als mail aanstaat (zie Pimpy) krijgen admins een mail bij een nieuwe melding, en de melder bij een antwoord of statuswijziging.
 
 ## Pimpy
 
