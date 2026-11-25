@@ -188,3 +188,54 @@ class Meeting(Base):
 
     group: Mapped[Group] = relationship()
     minute: Mapped[Minute | None] = relationship()
+
+
+# --- Meldingen (bugs, ideeën, vragen) ------------------------------------
+
+TICKET_KINDS = ("bug", "idee", "vraag")
+TICKET_STATUSES = ("open", "in_behandeling", "opgelost", "gesloten")
+TICKET_PRIORITIES = ("laag", "normaal", "hoog", "urgent")
+CLOSED_TICKET_STATUSES = ("opgelost", "gesloten")
+
+
+class Ticket(Base):
+    __tablename__ = "tickets"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    kind: Mapped[str] = mapped_column(String(16), default="bug")
+    title: Mapped[str] = mapped_column(String(160))
+    description: Mapped[str] = mapped_column(Text)
+    # Pagina waarop de melding is gedaan, bijv. /columns/12.
+    page: Mapped[str | None] = mapped_column(String(300))
+    status: Mapped[str] = mapped_column(String(20), default="open", index=True)
+    priority: Mapped[str] = mapped_column(String(16), default="normaal")
+    # Verwijdert de melder zijn account, dan blijft de melding staan zonder naam.
+    reporter_id: Mapped[int | None] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"), index=True)
+    assignee_id: Mapped[int | None] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    closed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+    reporter: Mapped[User | None] = relationship(foreign_keys=[reporter_id])
+    assignee: Mapped[User | None] = relationship(foreign_keys=[assignee_id])
+    messages: Mapped[list["TicketMessage"]] = relationship(
+        back_populates="ticket", cascade="all, delete-orphan", passive_deletes=True,
+        order_by="TicketMessage.created_at",
+    )
+
+
+class TicketMessage(Base):
+    __tablename__ = "ticket_messages"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    ticket_id: Mapped[int] = mapped_column(ForeignKey("tickets.id", ondelete="CASCADE"), index=True)
+    author_id: Mapped[int | None] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"))
+    body: Mapped[str] = mapped_column(Text)
+    # "message" = reactie, "event" = automatische regel (status gewijzigd e.d.)
+    kind: Mapped[str] = mapped_column(String(16), default="message")
+    # Interne notitie: alleen zichtbaar voor admins.
+    internal: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+    ticket: Mapped[Ticket] = relationship(back_populates="messages")
+    author: Mapped[User | None] = relationship()
